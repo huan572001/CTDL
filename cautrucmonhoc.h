@@ -1,10 +1,11 @@
 #pragma once
 #include<iostream>
 #include<string.h>
+#include "funtion.h"
 using namespace std;
 struct MonHoc{
-	char maMH[10];
-	char tenMH[50];
+	char maMH[10]="";
+	char tenMH[50]="";
 	int STCLT,STCTH;
 };
 struct Node{
@@ -15,6 +16,26 @@ struct Node{
 struct CayNhiPhan{
 	Node *root=NULL;
 };
+void chuyen_so_thanh_chuoi(int n,char res[]) {
+	char s[4];
+	int k = 0;
+	while(n){
+		s[k++] = n % 10 + 48;
+		n /= 10;
+	}
+	for(int i = k - 1; i >= 0; i--) {
+		res[k - 1 - i] = s[i];
+	}
+	res[k] = '\0';
+}
+int chuyen_chuoi_thanh_so(char res[]) {
+	int n=0;
+	for(int i=0;i<strlen(res);i++)
+	{
+		n=n*10+(res[i]-48);
+	}
+	return n;
+}
 void NhapMH(MonHoc &MH,int key)
 {
 	if(key==0)
@@ -29,7 +50,17 @@ void NhapMH(MonHoc &MH,int key)
 	cout<<"\n\tNhap so tin chi thuc hanh: ";
 	cin>>MH.STCTH;
 }
-void XuatMH(MonHoc MH)
+void XuatMH(int x,int &y,MonHoc MH,int mangdodai_mh[])
+{
+	outtextxy(x=x+10,y+5,MH.maMH);
+	outtextxy(x=x+mangdodai_mh[2],y+5,MH.tenMH);
+	char stclt[3];
+	chuyen_so_thanh_chuoi(MH.STCLT,stclt);
+	outtextxy(x=x+mangdodai_mh[3],y+5,stclt);
+	chuyen_so_thanh_chuoi(MH.STCTH,stclt);
+	outtextxy(x=x+mangdodai_mh[4],y+5,stclt);	
+}
+void XuatMH2(MonHoc MH)
 {
 	cout<<"\n\tma mon hoc: ";
 	cout<<MH.maMH;
@@ -40,11 +71,25 @@ void XuatMH(MonHoc MH)
 	cout<<"\n\tso tin chi thuc hanh: ";
 	cout<<MH.STCTH;
 }
+void LNR2(Node *root)
+{
+	// cây còn ph?n t?
+	
+	if (root != NULL)
+	{
+		LNR2(root->pLeft);
+		XuatMH2(root->monhoc);
+		LNR2(root->pRight);
+	}
+	
+}
 void ThemNode(Node *&root, MonHoc MH)
 {
+	
 	// n?u cây r?ng
 	if (root == NULL)
 	{
+		cout<<"\n\n\t\tVO ROI NE";
 		Node* p = new Node;
 		p->monhoc = MH;
 		p->pLeft = NULL;
@@ -53,28 +98,60 @@ void ThemNode(Node *&root, MonHoc MH)
 	}
 	else
 	{
-		if (strcmp(MH.tenMH,root->monhoc.tenMH) >0)
+		if (stricmp(MH.maMH,root->monhoc.maMH) >0)
 		{
 			ThemNode(root->pRight, MH);
 		}
-		else if (stricmp(MH.tenMH,root->monhoc.tenMH) <0)
+		else if (stricmp(MH.maMH,root->monhoc.maMH) <0)
 		{
 			ThemNode(root->pLeft, MH);
 		}
 	}
 }
-void LNR(Node *root)
+//void LNR(int x,int y,Node *root,int mangdodai_mh[])
+//{
+//	if (root != NULL)
+//	{
+//		LNR(x,y,root->pLeft,mangdodai_mh);
+//		XuatMH(x,y,root->monhoc,mangdodai_mh);
+//		LNR(x,y,root->pRight,mangdodai_mh);
+//	}	
+//}
+void LNR(int x,int y,Node *root,int mangdodai_mh[])
 {
-	// cây còn ph?n t?
-	
-	if (root != NULL)
-	{
-		LNR(root->pLeft);
-		XuatMH(root->monhoc);
-		LNR(root->pRight);
-	}
-	
+	Node *pre;
+	Node *current=root;
+	while (current)
+    {
+		if (!current->pLeft)
+    	{
+    		y=y+30;
+   		    XuatMH(x,y,current->monhoc,mangdodai_mh);
+    	    current = current->pRight;
+    	}
+    	else
+    	{
+     		pre = current->pLeft;
+     		while (pre->pRight&&pre->pRight != current)
+     		{
+      			pre = pre->pRight;
+     		}
+     		if (!pre->pRight)
+     		{
+      			pre->pRight = current;
+      			current = current->pLeft;
+     		}
+     		else
+     		{
+     			y=y+30;
+      			XuatMH(x,y,current->monhoc,mangdodai_mh);
+      			pre->pRight = NULL;
+      			current = current->pRight;
+     		}
+    	}
+   	}
 }
+
 // CÁCH 1: TÌM NODE TRÁI NH?T C?A CÂY CON PH?I
 void Tim_Node_The_Mang(Node*& X, Node*& Y)
 {
@@ -97,11 +174,11 @@ void XoaNode(Node *&root,char *key)
 	}
 	else
 	{
-		if(strcmp(key,root->monhoc.tenMH)>0)
+		if(stricmp(key,root->monhoc.tenMH)>0)
 		{
 			XoaNode(root->pRight,key);
 		}
-		else if(strcmp(key,root->monhoc.tenMH)<0)
+		else if(stricmp(key,root->monhoc.tenMH)<0)
 		{
 			XoaNode(root->pLeft,key);
 		}
@@ -125,7 +202,7 @@ void XoaNode(Node *&root,char *key)
 		}
 	}
 }
-void chinh_su_mon_hoc_co_ten(Node* root,char* key)
+void chinh_su_mon_hoc_co_ten(Node* root,char* key,MonHoc &mh)
 {
 	if(root==NULL)
 	{
@@ -133,17 +210,62 @@ void chinh_su_mon_hoc_co_ten(Node* root,char* key)
 	}
 	else
 	{
-		if(strcmp(key,root->monhoc.tenMH)>0)
+		if(stricmp(key,root->monhoc.maMH)>0)
 		{
-			chinh_su_mon_hoc_co_ten(root->pRight,key);
+			chinh_su_mon_hoc_co_ten(root->pRight,key,mh);
 		}
-		else if(strcmp(key,root->monhoc.tenMH)<0)
+		else if(stricmp(key,root->monhoc.maMH)<0)
 		{
-			chinh_su_mon_hoc_co_ten(root->pLeft,key);
+			chinh_su_mon_hoc_co_ten(root->pLeft,key,mh);
 		}
 		else
 		{
-			NhapMH(root->monhoc,1);
+			mh=root->monhoc;
 		}
+	}
+}
+void WriteFileMH(char *FileName,MonHoc mh)  
+{  
+	FILE *f;      	
+//	MonHoc mh;
+//	NhapMH(mh,0);
+	f=fopen(FileName,"ab");  
+//	ThemNode(root,mh);
+	fwrite(&mh,sizeof(mh),1,f); 
+	fclose(f);   
+}  
+void doc_tu_file_vao_cay(char *FileName,Node *&root)
+{
+		FILE *f;   
+		MonHoc monhoc;   	
+	f=fopen(FileName,"rb");
+	fread(&monhoc,sizeof(monhoc),1,f);  
+	 	ThemNode(root,monhoc);
+	while (!feof(f))  
+	{  
+		 ThemNode(root,monhoc);
+		fread(&monhoc,sizeof(monhoc),1,f);  
+	}  	  
+	fclose(f); 
+}
+void vietMHvaofile(Node *&root)
+{
+	if (root != NULL)
+	{
+		vietMHvaofile(root->pLeft);
+		WriteFileMH("monhoc.dat",root->monhoc);
+		vietMHvaofile(root->pRight);
+	}		
+}
+void KiemTraMMH(Node *root,char a[],int &kt)
+{
+	if (root != NULL)
+	{
+		KiemTraMMH(root->pLeft,a,kt);
+		if(stricmp(root->monhoc.maMH,a)==0)
+		{
+			kt=1;
+		}
+		KiemTraMMH(root->pRight,a,kt);
 	}
 }

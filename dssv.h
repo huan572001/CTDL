@@ -166,7 +166,7 @@ void xulydssv(int &luu_id)
 				lophoc_it3();
 				break;
 			case 3131:
-				Nhap(465,45,maLop);
+				Nhap(465,45,id,maLop);
 				break;
 			default : 
 			manhinhchinh3();

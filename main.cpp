@@ -8,12 +8,13 @@ graphics in Dev-C++ - nguyenvanquan7826
 #include "dssv.h"
 #include "monhoc.h"
 #include "loptinchi.h"
+#include "cautrucmonhoc.h"
 
 char tk[7]="";
 char mk[7]="";
 
 
-void xuly();
+void xuly(Node *root);
 
 
 
@@ -38,7 +39,7 @@ void taobangmenu()
 	taobutton_t(70,330,"CHUC NANG",20,10,MAU_XANHLA,MAU_XANHNON,0,0);
 }
 
-void dangnhap()
+void dangnhap(Node *root)
 {	
 	
 	setmapid();
@@ -64,44 +65,39 @@ void dangnhap()
 	taotextinput(720,380,1000,410,"",1003);
 	
 	int x=-1, y=-1;
+	int id=0;
 	while(true){
-		int id=0;
-
 		if(ismouseclick(WM_LBUTTONDOWN)){
 			getmouseclick(WM_LBUTTONDOWN, x, y);
 			id = MapID[x][y];
 			clearmouseclick(WM_LBUTTONDOWN);
+			}
 		switch(id){
 			case 1000:
 				taobangmenu();
-				xuly();
+				xuly(root);
 				break;
 			case 1001:
 				exit(0);
 				break;
 			case 1002:
-				Nhap(725,315,tk);
+				Nhap(725,315,id,tk);
 				break;
 			case 1003:
-				Nhap(725,385,mk);
-				break;
-			
-		}
-	}
-		
+				Nhap(725,385,id,mk);
+				break;			
+		}	
 		delay(0.001);
-}
+    }
 }
 
 
-void xuly()
+void xuly(Node *root)
 {
 	int luu_id=0;
 	int x=-1, y=-1;
-	while(true){
-		
-		
-		int id=0;
+	int id=0;
+	while(true){					
 		id=luu_id;
 		if(ismouseclick(WM_LBUTTONDOWN)){
 			getmouseclick(WM_LBUTTONDOWN, x, y);
@@ -116,7 +112,7 @@ void xuly()
 				setbkcolor(MAU_TRANG);
   			 	cleardevice();
 				taobangmenu();
-				xulymonhoc(luu_id);
+				xulymonhoc(luu_id,root);
 				break;
 			case 2:
 				luu_id=0;
@@ -139,7 +135,7 @@ void xuly()
 				setmapid();
 				setbkcolor(MAU_TRANG);
    				cleardevice();
-				dangnhap();
+				dangnhap(root);
 				
 				break;
 
@@ -152,6 +148,8 @@ void xuly()
 
 int main(int argc, char *argv[])
 {
+	Node *root=NULL;
+	doc_tu_file_vao_cay("monhoc.Dat",root);
 	setmapid();
 	// now, you can run project
 	initwindow(CUASO_NGANG,CUASO_DOC);			// init window graphics
@@ -160,7 +158,7 @@ int main(int argc, char *argv[])
    	
 	//tao o dang nhap
 	
-	dangnhap();
+	dangnhap(root);
 	
 			
 	while(!kbhit()) delay(1);		// pause screen	

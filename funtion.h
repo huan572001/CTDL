@@ -1,9 +1,10 @@
 #pragma once
 //#include <string>
 #include <iostream>
+using namespace std;
 #include "define.h"
 #include<string.h> 
-
+#include "cautrucmonhoc.h"
 
 ///////////////////////////////////////////////////////////////////////// PHAN VE ////////////////////////////////
 int MapID[CUASO_NGANG][CUASO_DOC];
@@ -109,6 +110,7 @@ void taobang(int x1,int y1,int chieu_cao,int mangdodai[],int slcot,int sldong,ch
 	for (int i=0;i<sldong;i++)
 	{
 		taodong(x1,y1+chieu_cao*i,chieu_cao,mangdodai,slcot);
+//		setidvung(x1,y1+chieu_cao*i,x1+600,y1+chieu_cao*(i+1),50+i);
 	}
 	tao_tieu_de_bang(x1,y1,td,slcot,mangdodai,clx,cly);
 	tao_sott(x1,y1,chieu_cao,sldong,clx,cly);
@@ -158,14 +160,27 @@ char *Chuan_Hoa(char *a)// chuan hoa nhap vao, chuyen thanh dang Anh Em Oi
 		
 	return res;
 }
-void Nhap(int x, int y, char s[]) {
+////////////////////////////////BAT KI TU TU BAN PHIM//////////////////////////////////////////
+void Nhap(int x, int y,int &luu_id, char s[]) {
 	int l=strlen(s) ;
 	 s[l+1]='\0';
     s[l]='|'; 
      while(1){
        	
 		outtextxy(x,y,s);
-		
+		int id=luu_id;
+		if(ismouseclick(WM_LBUTTONDOWN)){
+			getmouseclick(WM_LBUTTONDOWN, x, y);
+			id = MapID[x][y];
+			clearmouseclick(WM_LBUTTONDOWN);
+		}
+		if(id!=luu_id)
+		{
+			luu_id=id;
+			s[l]='\0';
+			l--;
+			return;
+		}
      	if(kbhit()){
 	     	char c= getch();
 	     	if('a'<=c&&c<='z'||'A'<=c&&c<='Z'||'0'<=c&&c<='9'||c==' ')
@@ -176,10 +191,13 @@ void Nhap(int x, int y, char s[]) {
 				 outtextxy(x,y,s);
 			}
 			else if(c==8){
+				if(l>0)
+				{
 					s[l-1]='|';
 					s[l]=' ';
 					outtextxy(x,y,s);
-					l--;
+					l--;	
+				}	
 			} 
 			else if(c==13) {
 				s[l]='\0';// xoa dau cach o cuoi chuoi  
@@ -193,59 +211,69 @@ void Nhap(int x, int y, char s[]) {
 			outtextxy(x,y,s);
 			s[l]=' ';
 			delay(100);
-			Chuan_Hoa(s); 
-			 
+			Chuan_Hoa(s); 			 
 			outtextxy(x,y,s);
 		 
-		}
+		}	
 	 } 
-
-} 
-void Nhap1(int x, int y , char s[])
-{
-	s[0+1]='\0';
-	s[0]='|';
-	int l=0;
-	while (true)
-	{
-		outtextxy(x,y,s);
-		if (kbhit()){
-			char c = getch();
-			std::cout<<c;
-			if ('a'<=c && c<='z' || 'A'<=c && c<='Z' || '0'<=c && c<='9' ||c==' ')
-			{
-				s[l]=c;
-				l++;
-				s[l+1]='\0';
-				outtextxy(x,y,s);
-				
-			}
-			else 
-			if (c==8)
-			{
-				s[l-1]='|';
-				s[l]=' ';
-				outtextxy(x,y,s);
-				l--;
-			}
-			else 
-			if (c==13)
-			{
-			break;
-			}
-			else
-			{
-				s[l]='|';
-			
-				outtextxy(x,y,s);
-				s[l]=' ';
-				
-				outtextxy(x,y,s);
-			}
-		}
-		
-	}
 	
+} 
+void Nhapso(int x, int y ,int &luu_id, char s[])
+{
+	int l=strlen(s) ;
+	s[l+1]='\0';
+    s[l]='|'; 
+	int id=luu_id;
+    while(1){
+       	
+		outtextxy(x,y,s);
+		
+		if(ismouseclick(WM_LBUTTONDOWN)){
+			getmouseclick(WM_LBUTTONDOWN, x, y);
+			id = MapID[x][y];
+			clearmouseclick(WM_LBUTTONDOWN);
+		}
+		if(id!=luu_id)
+		{
+			luu_id=id;
+			s[l]='\0';
+//			l--;
+			return;
+		}
+     	if(kbhit()){
+	     	char c= getch();
+	     	if('0'<=c&&c<='9')
+	     	{
+		     	s[l]=c;
+				 l++;
+				 s[l+1]='\0';
+				 outtextxy(x,y,s);
+			}
+			else if(c==8){
+				if(l>0)
+				{
+					s[l-1]='|';
+					s[l]=' ';
+					outtextxy(x,y,s);
+					l--;	
+				}	
+			} 
+			else if(c==13) {
+				s[l]='\0';// xoa dau cach o cuoi chuoi  
+				return; 
+			} 
+			 	
+		 }
+		 else{
+			s[l]='|';
+			delay(100);
+			outtextxy(x,y,s);
+			s[l]=' ';
+			delay(100);
+			Chuan_Hoa(s); 			 
+			outtextxy(x,y,s);		 
+		}	
+	 } 	
 }
 
 void taotextinput(int x, int y ,int x1 ,int y1, char text[], int id)
@@ -260,3 +288,13 @@ void taotextinput(int x, int y ,int x1 ,int y1, char text[], int id)
 	outtextxy(x1, y1, text);
 	setidvung(x,y,x1,y1,id);
 }
+int tong(int a[],int n)
+{
+	int tong=0;
+	for(int i=0;i<n;i++)
+	{
+		tong=tong+a[i];
+	}
+	return tong;
+}
+

@@ -5,8 +5,9 @@
 #include "funtion.h"
 #include "define.h"
 #include "cautrucmonhoc.h"
-
-void tao_item1()
+////////////////////////////////////////////////////////////DO HOA///////////////////////////
+int mangdodai_mh[]={0,80,225,430,225,225};
+void tao_item1(Node *&root)
 {
 	setbkcolor(MAU_TRANG);
 	setcolor(MAU_DEN);
@@ -23,21 +24,21 @@ void tao_item1()
     taobutton_t(880,90,"STCTH",130,30,MAU_XAM,MAU_DEN,20,5);
    
     
-    taobutton(630,210,"SAVE",130,30,MAU_XANHDUONG,MAU_TRANG,30,5,313);
-	taobutton(770,210,"CANCLE",140,30,MAU_XANHDUONG,MAU_TRANG,15,5,313);
-	taobutton(920,210,"DELETE",140,30,MAU_XANHDUONG,MAU_TRANG,15,5,313);
-	taobutton(1070,210,"NEW",130,30,MAU_XANHDUONG,MAU_TRANG,30,5,313);
-	
+    taobutton(630,170,"THEM",130,30,MAU_XANHDUONG,MAU_TRANG,30,5,313);
+	taobutton(770,170,"LUU CHINH SUA",240,30,MAU_XANHDUONG,MAU_TRANG,15,5,314);
+	taobutton(1010,170,"DELETE",140,30,MAU_XANHDUONG,MAU_TRANG,15,5,315);
+//	taobutton(1070,210,"NEW",130,30,MAU_XANHDUONG,MAU_TRANG,30,5,313);
+	taobutton_t(350,210,"TIM KIEM",160,30,MAU_XAM,MAU_DEN,20,5);
 	int sldong=15;
 	int slcot=5;
-	int mangdodai_mh[]={0,80,225,430,225,225};
+	
 	int chieu_cao=30;
 	char monhoc[][50]={"","STT","MA MON HOC","TEN MON HOC","STCLT","STCTH"};
 	taobang(325,280,chieu_cao,mangdodai_mh,slcot,sldong,monhoc,10,5);
-	
+	LNR(405,280,root,mangdodai_mh);
 	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,00);
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,00);
-	
+//	LNR2(root);
 	setbkcolor(MAU_TRANG);
 	setcolor(MAU_DEN);
 	
@@ -45,51 +46,84 @@ void tao_item1()
 	taotextinput(1010,40,1360,70,"",12);
 	taotextinput(480,90,850,120,"",13);
 	taotextinput(1010,90,1360,120,"",14);
+	taotextinput(510,210,750,240,"",15);
 }
 
 
 
-void xulymonhoc(int &luu_id)
+void xulymonhoc(int &luu_id,Node *root)
 {
 
-	tao_item1();
-	char maMH[10];
-	char tenMH[50];
-	char STCLT[2];
-	char STCTH[2];
-	
+	tao_item1(root);
+	MonHoc MH;
+	fflush(stdin);
+	char STCTH[2]="";
+	char STCLT[2]="";
 	int x=-1, y=-1;
+	int id=0;
 	while(true){
 		
 		//Bat chuot
-		int id=0;
+		
 		if(ismouseclick(WM_LBUTTONDOWN)){
 			getmouseclick(WM_LBUTTONDOWN, x, y);
 			id = MapID[x][y];
 			clearmouseclick(WM_LBUTTONDOWN);
 		}
-		if (id<=4 && id>=1)
+		if (id<=4 && id>=1)//thoat ra vào chuc nang khac
 		{
 			luu_id=id;
 			break;
 		}
+		outtextxy(485,45,MH.maMH);
+		outtextxy(1015,45,MH.tenMH);
+		outtextxy(485,95,STCLT);
+		outtextxy(1015,95,STCTH);
 		switch(id)
 		{
+			
 			case 11:
-				Nhap(485,45,maMH);
+				
+				Nhap(485,45,id,MH.maMH);//nhap ma mon hoc
 				break;
 			case 12:
-				Nhap(1015,45,tenMH);
+				Nhap(1015,45,id,MH.tenMH);//nhap ten mon hoc
 				break;
 			case 13:
-				Nhap(485,95,STCLT);
+				Nhapso(485,95,id,STCLT);//nhap so tc lt
+				MH.STCLT=chuyen_chuoi_thanh_so(STCLT);//chuyen chuoi thanh so gan lai vao MH
 				break;
 			case 14:
-				Nhap(1015,95,STCTH);
+				Nhapso(1015,95,id,STCTH);//nhap so tc th
+				MH.STCTH=chuyen_chuoi_thanh_so(STCTH);//chuyen chuoi thanh so gan lai vao MH
+				break; 
+			case 15:
+				Nhap(515,215,id,MH.maMH);//nhap ten mon hoc
+				chinh_su_mon_hoc_co_ten(root,MH.maMH,MH);
+				chuyen_so_thanh_chuoi(MH.STCLT,STCLT);
+				chuyen_so_thanh_chuoi(MH.STCTH,STCTH);
 				break;
 		}
-		delay(0.001);
-		
-}
+		if(id==313)
+		{
+			int kt=0;
+			KiemTraMMH(root,MH.maMH,kt);
+			if(kt==1)
+			{
+				outtextxy(630,140,"Ma mon hoc bi trung!");
+				id=11;	
+			}
+			else
+			{
+				ThemNode(root,MH);//them vao cay
+//				WriteFileMH("monhoc.Dat",MH);//them vao file
+				luu_id=1;
+				tao_item1(root);//ve lai o nhap va cap nhat lai danh sach mon hoc
+				outtextxy(630,140,"them mon hoc thanh cong");
+				break;	
+			}		
+		}
+		delay(0.001);		
+	}
 }
 
