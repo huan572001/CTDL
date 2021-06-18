@@ -79,13 +79,11 @@ void sinhvien_it3()
 	int mangdodai[]={0,65,225,225,355,225,90};
 	int chieu_cao=30;
 	char sinhvien[][50]={"","STT","MA LOP","MSSV","HO TEN","SDT","PHAI"};
-	taobang(325,280,chieu_cao,mangdodai,slcot,sldong,sinhvien,10,5);
+	taobang(325,280,chieu_cao,mangdodai,slcot,sldong,sinhvien,10,5,100);
 	
 	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,00);
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,00);
 }
-
-
  void diem_it3()
  {
  	setbkcolor(MAU_TRANG);
@@ -97,7 +95,7 @@ void sinhvien_it3()
 	int mangdodai_diem[]={0,80,350,245,245,225};
 	int chieu_cao=30;
 	char diem[][50]={"","STT","MSSV","HO","TEN","DIEM TB"};
-	taobang(325,280,chieu_cao,mangdodai_diem,slcot,sldong,diem,10,5);
+	taobang(325,280,chieu_cao,mangdodai_diem,slcot,sldong,diem,10,5,100);
 			
 	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,00);
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,00);
@@ -126,7 +124,7 @@ void lophoc_it3()
 	int mangdodai_lh[]={0,136,350,327,327};
 	int chieu_cao=30;
 	char lophoc[][50]={"","STT","MA LOP","SO LUONG SINH VIEN","NAM NHAP HOC"};
-	taobang(325,280,chieu_cao,mangdodai_lh,slcot,sldong,lophoc,10,5);
+	taobang(325,280,chieu_cao,mangdodai_lh,slcot,sldong,lophoc,10,5,100);
 			
 	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,00);
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,00);

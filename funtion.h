@@ -97,7 +97,7 @@ void tao_sott(int x, int y, int chieu_cao,int sldong,int clx,int cly) {
 	y=y+30;
 	for(int i = 1; i < sldong; i++) 
 	{
-		itoa(i,a,sldong);
+		chuyen_so_thanh_chuoi(i,a);
 		settextstyle(9,0,1);
 		setbkcolor(MAU_TRANG);
 		outtextxy(x+20,y+cly,a);
@@ -105,12 +105,12 @@ void tao_sott(int x, int y, int chieu_cao,int sldong,int clx,int cly) {
 	}
 }
 
-void taobang(int x1,int y1,int chieu_cao,int mangdodai[],int slcot,int sldong,char td[][50],int clx,int cly)
+void taobang(int x1,int y1,int chieu_cao,int mangdodai[],int slcot,int sldong,char td[][50],int clx,int cly,int id)
 {
 	for (int i=0;i<sldong;i++)
 	{
 		taodong(x1,y1+chieu_cao*i,chieu_cao,mangdodai,slcot);
-//		setidvung(x1,y1+chieu_cao*i,x1+600,y1+chieu_cao*(i+1),50+i);
+		setidvung(x1,y1+chieu_cao*i,x1+600,y1+chieu_cao*(i+1),id+i);
 	}
 	tao_tieu_de_bang(x1,y1,td,slcot,mangdodai,clx,cly);
 	tao_sott(x1,y1,chieu_cao,sldong,clx,cly);
