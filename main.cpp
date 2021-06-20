@@ -10,15 +10,11 @@ graphics in Dev-C++ - nguyenvanquan7826
 #include "loptinchi.h"
 #include "cautrucmonhoc.h"
 #include "cautrucloptinchi.h"
-
+#include "cautrucsinhvien.h"
 char tk[7]="";
 char mk[7]="";
 
-
-void xuly(Node *root,DSloptinchi &dsltc);
-
-
-
+void xuly(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first);
 void taobangmenu()
 {
 	setmapid();
@@ -40,7 +36,7 @@ void taobangmenu()
 	taobutton_t(70,330,"CHUC NANG",20,10,MAU_XANHLA,MAU_XANHNON,0,0);
 }
 
-void dangnhap(Node *root,DSloptinchi &dsltc)
+void dangnhap(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first)
 {	
 	
 	setmapid();
@@ -76,7 +72,7 @@ void dangnhap(Node *root,DSloptinchi &dsltc)
 		switch(id){
 			case 1000:
 				taobangmenu();
-				xuly(root,dsltc);
+				xuly(root,dsltc,first);
 				break;
 			case 1001:
 				exit(0);
@@ -93,7 +89,7 @@ void dangnhap(Node *root,DSloptinchi &dsltc)
 }
 
 
-void xuly(Node *root,DSloptinchi &dsltc)
+void xuly(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first)
 {
 	int luu_id=0;
 	int x=-1, y=-1;
@@ -130,14 +126,14 @@ void xuly(Node *root,DSloptinchi &dsltc)
 				setbkcolor(MAU_TRANG);
    				cleardevice();
   			 	taobangmenu();
-				xulydssv(luu_id);
+				xulydssv(first,luu_id);
 				break;
 			case 4:
 				luu_id=0;
 				setmapid();
 				setbkcolor(MAU_TRANG);
    				cleardevice();
-				dangnhap(root,dsltc);
+				dangnhap(root,dsltc,first);
 				
 				break;
 
@@ -152,9 +148,11 @@ int main(int argc, char *argv[])
 {
 	Node *root=NULL;
 	DSloptinchi dsltc;
+	NodeSinhVien *first=NULL;
 	dsltc.soluong=0;
 	doc_tu_file_vao_cay("monhoc.Dat",root);
 	doc_tu_file_vao_LTC("Loptinchi.Dat",dsltc);
+	doc_tu_file_vao_dslkd("Sinhvien.Dat",first);
 	setmapid();
 	// now, you can run project
 	initwindow(CUASO_NGANG,CUASO_DOC);			// init window graphics
@@ -163,7 +161,7 @@ int main(int argc, char *argv[])
    	
 	//tao o dang nhap
 	
-	dangnhap(root,dsltc);
+	dangnhap(root,dsltc,first);
 	
 			
 	while(!kbhit()) delay(1);		// pause screen	

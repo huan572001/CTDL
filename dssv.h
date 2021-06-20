@@ -3,7 +3,7 @@
 #include <winbgim.h> 
 #include "funtion.h"
 #include "define.h"
-
+#include "cautrucsinhvien.h"
 void taobarde(int x ,int y ,int x1 ,int y1)//de bang
 {
 	setfillstyle(1,MAU_TRANG);
@@ -67,7 +67,7 @@ void itembentrai1()
 
 
 
-void sinhvien_it3()
+void sinhvien_it3(NodeSinhVien *&first)
 {   
 	setbkcolor(MAU_TRANG);
 	taobarde(315,15,1520,260);
@@ -79,11 +79,13 @@ void sinhvien_it3()
 	int mangdodai[]={0,65,225,225,355,225,90};
 	int chieu_cao=30;
 	char sinhvien[][50]={"","STT","MA LOP","MSSV","HO TEN","SDT","PHAI"};
-	taobang(325,280,chieu_cao,mangdodai,slcot,sldong,sinhvien,10,5,100);
-	
+	taobang(325,280,chieu_cao,mangdodai,slcot,sldong,sinhvien,10,5,200);
+	XuatDanhSach(405,315,first,mangdodai);
 	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,00);
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,00);
 }
+
+
  void diem_it3()
  {
  	setbkcolor(MAU_TRANG);
@@ -102,7 +104,7 @@ void sinhvien_it3()
  }
 
 
-void lophoc_it3()
+void lophoc_it3(NodeSinhVien *&first)
 {
 	setbkcolor(MAU_TRANG);
   	taobarde(315,15,1520,260);
@@ -116,7 +118,7 @@ void lophoc_it3()
     taotextinput(460,40,830,70,"",3131);
     
 	taobutton(770,210,"CANCLE",140,30,MAU_XANHDUONG,MAU_TRANG,15,5,313);
-	taobutton(920,210,"CHI TIET",140,30,MAU_XANHDUONG,MAU_TRANG,15,5,313);
+	taobutton(920,210,"CHI TIET",140,30,MAU_XANHDUONG,MAU_TRANG,15,5,501);
     
     
 	int sldong=15;
@@ -125,20 +127,145 @@ void lophoc_it3()
 	int chieu_cao=30;
 	char lophoc[][50]={"","STT","MA LOP","SO LUONG SINH VIEN","NAM NHAP HOC"};
 	taobang(325,280,chieu_cao,mangdodai_lh,slcot,sldong,lophoc,10,5,100);
-			
+	XuatDSlop(460,310,first,mangdodai_lh);	
 	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,00);
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,00);
 	
 }
-void xulydssv(int &luu_id)
+void XuLyNhapSV(NodeSinhVien *&first,int &luu_id,SinhVien SV)
+{
+	NodeSinhVien *k=first;
+	sinhvien_it3(k);
+	char mSVtam[15];
+
+	int x=-1, y=-1;
+	int id=0;
+	while(true){	
+		//Bat chuot	
+		if(ismouseclick(WM_LBUTTONDOWN)){
+			getmouseclick(WM_LBUTTONDOWN, x, y);
+			id = MapID[x][y];
+			clearmouseclick(WM_LBUTTONDOWN);
+		}
+		if (id<=4 && id>=1||id<=33&&id>=31)
+		{
+			luu_id=id;
+			break;
+		}
+		outtextxy(465,45,SV.malop);
+		switch(id)
+		{
+			case 312:
+				Nhap(975,45,id,SV.mSV);
+				break;
+			case 313:
+				Nhap(465,95,id,SV.ho);
+				break;
+			case 314:
+				Nhap(975,95,id,SV.ten);
+				break;
+			case 315:
+				Nhapso(465,145,id,SV.sdt);
+				break;
+			case 317:
+				SV.phai=true;
+				break;
+			case 318:
+				SV.phai=false;
+				break;
+			case 3192:
+				chinh_sua_Sv_coMS(k,SV,mSVtam);
+				sinhvien_it3(k);
+				id=0;
+				break;
+			case 3193:
+				XoaSv(k,mSVtam);
+				sinhvien_it3(k);
+				id=0;
+				break;
+			case 4545:
+				NodeSinhVien *p=TaoMotSV(SV);
+				them(k,p,k->sv.malop);
+				sinhvien_it3(first);
+				id=0;
+				break;
+		}
+		if(id>200&&id<214)
+		{	sinhvien_it3(first);
+			timSV(first,id-200,SV);
+			strcpy(mSVtam,SV.mSV);
+			outtextxy(975,45,SV.mSV);
+			outtextxy(465,95,SV.ho);
+			outtextxy(975,95,SV.ten);
+			outtextxy(465,145,SV.sdt);
+			luu_id=id;//cap nhat luu id de bat ko cho nhap ma mon hoc
+			id=0;//cho con tro nhay vao o nhap ten mon hoc
+		}
+		delay(0.001);		
+	}
+	first=k;
+}
+void XuLyNhapLOP(NodeSinhVien *&first,int &luu_id)
+{
+	lophoc_it3(first);
+	SinhVien SV;
+	int x=-1, y=-1;
+	int id=0;
+	while(true){	
+		//Bat chuot	
+		if(ismouseclick(WM_LBUTTONDOWN)){
+			getmouseclick(WM_LBUTTONDOWN, x, y);
+			id = MapID[x][y];
+			clearmouseclick(WM_LBUTTONDOWN);
+		}
+		if (id<=4 && id>=1||id<=33&&id>=31)
+		{
+			luu_id=id;
+			break;
+		}
+		switch(id)
+		{
+			case 3131:
+				Nhap(465,45,id,SV.malop);
+				break;
+			case 501:
+				for(NodeSinhVien *k=first;k!=NULL;k=k->next)
+				{
+					if(strcmp(k->sv.malop,SV.malop)==0)
+					{
+						XuLyNhapSV(first,id,SV);
+						break;	
+					}
+					else if(k->next==NULL)
+					{
+						XuLyNhapSV(first,id,SV);
+						break;
+					}
+				}
+		
+				break;
+		}
+		if(id>100&&id<114)
+		{
+			lophoc_it3(first);//tao lai o nhap
+			timLopSV(first,id-100,SV.malop);
+			outtextxy(465,45,SV.malop);
+			luu_id=id;//cap nhat luu id de bat ko cho nhap ma mon hoc
+			id=0;//cho con tro nhay vao o nhap ten mon hoc
+		}
+		delay(0.001);		
+	}
+}
+void xulydssv(NodeSinhVien *&first,int &luu_id)
 {
 	char maLop[15];
 	manhinhchinh3();
 	int x=-1, y=-1;
+	int id=0;
+	XuLyNhapLOP(first,id);
 	while(true){
 		
 		//Bat chuot
-		int id=0;
 		if(ismouseclick(WM_LBUTTONDOWN)){
 			getmouseclick(WM_LBUTTONDOWN, x, y);
 			id = MapID[x][y];
@@ -153,25 +280,28 @@ void xulydssv(int &luu_id)
 		{
 			case 31://sinh vien
 			//	manhinhchinh3();
-				sinhvien_it3();
+//				sinhvien_it3();
+				XuLyNhapLOP(first,id);
 				break;
 			case 32://lop hoc
 			//	manhinhchinh3();
 				diem_it3();
+				id=0;
 				break;
 			case 33:
 			//	manhinhchinh3();
-				lophoc_it3();
+				lophoc_it3(first);
+				id=0;
 				break;
 			case 3131:
 				Nhap(465,45,id,maLop);
+				id=0;
 				break;
 			default : 
 			manhinhchinh3();
 			break;
 		}
-		delay(0.001);
-		
+		delay(0.001);	
 }
 }
 

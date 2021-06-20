@@ -112,7 +112,7 @@ void xulymonhoc(int &luu_id,Node *&root)
 				}	
 				break;			
 		}
-		if(id>99&&id<114)
+		if(id>100&&id<114)
 		{
 			tao_item1(root);//tao lai o nhap
 			LNR1(root,id-99,MH);//tim kiem Mh de xuat
