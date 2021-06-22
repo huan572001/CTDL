@@ -11,10 +11,26 @@ graphics in Dev-C++ - nguyenvanquan7826
 #include "cautrucmonhoc.h"
 #include "cautrucloptinchi.h"
 #include "cautrucsinhvien.h"
-char tk[7]="";
-char mk[7]="";
+#include "dh_svdk.h"
+const char AD[10]="ADMIN";
+const char Pass[10]="GV";
+const char passsv[10]="SV";
+char tk[50]="";
+char mk[10]="";
 
-void xuly(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first);
+bool ktdn(NodeSinhVien *first)//kiem tra dang nhap sinh vien 
+{
+	
+	for (NodeSinhVien *k=first ; k!=NULL ; k=k->next)
+	{
+		if ((stricmp(tk,k->sv.mSV)==0) && ((stricmp(mk,passsv)==0)))
+		return true;
+		}
+		return false;	
+}
+void xuly_svdk(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first);// sinh vien dang ky
+void xuly(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first);// admin
+
 void taobangmenu()
 {
 	setmapid();
@@ -35,6 +51,9 @@ void taobangmenu()
 											    
 	taobutton_t(70,330,"CHUC NANG",20,10,MAU_XANHLA,MAU_XANHNON,0,0);
 }
+
+
+///////////////////////////// gv ////////////////////////
 
 void dangnhap(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first)
 {	
@@ -60,19 +79,36 @@ void dangnhap(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first)
 	
 	taotextinput(720,310,1000,340,"",1002);
 	taotextinput(720,380,1000,410,"",1003);
+;
 	
+	int luu_id=0;
 	int x=-1, y=-1;
 	int id=0;
 	while(true){
+		id=luu_id;
 		if(ismouseclick(WM_LBUTTONDOWN)){
 			getmouseclick(WM_LBUTTONDOWN, x, y);
 			id = MapID[x][y];
 			clearmouseclick(WM_LBUTTONDOWN);
 			}
 		switch(id){
-			case 1000:
+			
+			case 1000: 
+				if ((stricmp(tk,AD)==0) && ((stricmp(mk,Pass)==0)))//dang nhap giang vien
+				{
 				taobangmenu();
 				xuly(root,dsltc,first);
+				}
+				else if (ktdn(first)==true) 
+				{
+					xuly_svdk(root,dsltc,first);
+				}
+				else//nhap lai
+				{	
+				outtextxy(700,420,"Thong tin sai! Moi nhap lai");
+				}
+				
+							
 				break;
 			case 1001:
 				exit(0);
@@ -142,7 +178,46 @@ void xuly(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first)
 }
 }
 
+/////////////////////  sv   /////////////
+void xuly_svdk(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first)
+{
+				setmapid();
+				setbkcolor(MAU_TRANG);
+				cleardevice();
+				taobangmenu_svdk();
+				xuly_dohoa_svdk();
+				bangchon_svdk();
 
+	int luu_id=0;
+	int x=-1, y=-1;
+	int id=0;
+	while(true)
+	{
+		id=luu_id;
+		if(ismouseclick(WM_LBUTTONDOWN)){
+			getmouseclick(WM_LBUTTONDOWN, x, y);
+			id = MapID[x][y];
+			clearmouseclick(WM_LBUTTONDOWN);
+		}
+		if(id==4)
+		{id=luu_id;
+		break;
+		}
+		switch(id){
+			case 4:
+				luu_id=0;
+				setmapid();
+				setbkcolor(MAU_TRANG);
+   				cleardevice();
+				dangnhap(root,dsltc,first);
+				
+				break;
+			
+		}
+		delay(0.001);
+	}
+	
+}
 
 int main(int argc, char *argv[])
 {

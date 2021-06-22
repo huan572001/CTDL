@@ -117,8 +117,7 @@ void loptc_it2(DSloptinchi &ds)
 	int slcot=7;
 	int mangdodai_ltc[]={0,80,200,173,173,173,173,173};
 	int chieu_cao=30;
-	char ltc[][50]
-	={"","STT","MLCC","MMH","NIEN KHOA","HOC KY","NHOM","SL SV"};
+	char ltc[][50]={"","STT","MLCC","MMH","NIEN KHOA","HOC KY","NHOM","SL SV"};
 	taobang(325,280,chieu_cao,mangdodai_ltc,slcot,sldong,ltc,10,5,200);	
 //	Xuatds2(ds);
 	Xuatds(405,280,ds,mangdodai_ltc);	
