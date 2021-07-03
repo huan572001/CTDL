@@ -1,12 +1,12 @@
 #pragma once
 #include<iostream>
 using namespace std;
-#include"Monhoc.h"
-//#include"SinhVien.h"
-//#include"Loptinchi.h"
+#include "Monhoc.h"
+#include "cautrucloptinchi.h"
+#include "cautrucsinhvien.h"
 struct SVDK{
 	char maSV[15];
-	float diem;
+	float diem=0;
 };
 struct NodeSVDK{
 	SVDK svdk;
@@ -40,6 +40,25 @@ void ThemDauSVDK(NodeSVDK*& first, SVDK svdk)
 		first = p;
 	}
 }
+void XoaSvDK(NodeSVDK *&first,char a[])
+{	NodeSVDK *p;
+	if (strcmp(first->svdk.maSV,a)==0 ) {
+		p=first;
+		first = p->next ;
+		delete p ;
+	}
+	else
+	for (NodeSVDK *k = first; k != NULL; k = k->next)
+	{
+		if (strcmp(k->next->svdk.maSV,a)==0)
+		{
+			p=k->next;
+			k->next=p->next;
+			delete p;
+			break;
+		}
+	}
+}
 //void themSVDK(NodeSVDK *&first, SVDK svdk){
 ////	NodeSinhVien *k = first;
 //NodeSVDK *p= TaoMotSVDK(svdk);
@@ -69,11 +88,33 @@ void ThemDauSVDK(NodeSVDK*& first, SVDK svdk)
 //		}	
 //	}
 //}
-void XuatDanhSachSVDK(NodeSVDK *first)
+void XuatDanhSachSVDK(int x,int y,NodeSVDK *first,NodeSinhVien *firstSV)
 {
+	int mangdodai_diem[]={0,80,350,245,245,225};
+	int tam=x;
+	char tam1[4];
 	for (NodeSVDK *k = first; k != NULL; k = k->next)
 	{
-		cout<<"\n\tMa SV: "<<k->svdk.maSV;
+		outtextxy(x,y,k->svdk.maSV);
+		for(NodeSinhVien *h=firstSV;h!=NULL;h=h->next)
+		{
+			if(strcmp(h->sv.mSV,k->svdk.maSV)==0)
+			{
+				outtextxy(x=x+mangdodai_diem[2],y,h->sv.ho);
+				outtextxy(x=x+mangdodai_diem[3],y,h->sv.ten);
+			}
+		}
+		if(k->svdk.diem==0)
+		{
+			outtextxy(x=x+mangdodai_diem[4]+100,y,"0");
+		}
+		else
+		{
+			chuyen_so_thanh_chuoi(k->svdk.diem,tam1);
+			outtextxy(x=x+mangdodai_diem[4]+100,y,tam1);			
+		}
+		x=tam;
+		y=y+30;
 	}
 }
 int soluongSVDK(NodeSVDK *first)

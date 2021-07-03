@@ -1,12 +1,29 @@
 #pragma once
-//#include <string>
 #include <iostream>
 using namespace std;
 #include "define.h"
 #include<string.h> 
-#include "cautrucmonhoc.h"
-
-///////////////////////////////////////////////////////////////////////// PHAN VE ////////////////////////////////
+//#include "cautrucmonhoc.h"
+void chuyen_so_thanh_chuoi(int n,char res[]) {
+	char s[4];
+	int k = 0;
+	while(n){
+		s[k++] = n % 10 + 48;
+		n /= 10;
+	}
+	for(int i = k - 1; i >= 0; i--) {
+		res[k - 1 - i] = s[i];
+	}
+	res[k] = '\0';
+}
+int chuyen_chuoi_thanh_so(char res[]) {
+	int n=0;
+	for(int i=0;i<strlen(res);i++)
+	{
+		n=n*10+(res[i]-48);
+	}
+	return n;
+}
 int MapID[CUASO_NGANG][CUASO_DOC];
 void setmapid()
 {
@@ -28,7 +45,7 @@ void setidvung(int x1 ,int y1 ,int x2 ,int y2 ,int id)
 		}
 	}
 }
-
+///////////////////////////////////////////////////////////////////////// PHAN VE ////////////////////////////////
 void taobutton(int x1,int y1,char text[],int vtx, int vty,int mau,int mau_text,int cl_x,int cl_y,int id)// muc luc
 {
 	setfillstyle(1,mau);
@@ -110,14 +127,23 @@ void taobang(int x1,int y1,int chieu_cao,int mangdodai[],int slcot,int sldong,ch
 	for (int i=0;i<sldong;i++)
 	{
 		taodong(x1,y1+chieu_cao*i,chieu_cao,mangdodai,slcot);
-		setidvung(x1,y1+chieu_cao*i,x1+600,y1+chieu_cao*(i+1),id+i);
+		setidvung(x1,y1+chieu_cao*i,x1+1200,y1+chieu_cao*(i+1),id+i);
 	}
 	tao_tieu_de_bang(x1,y1,td,slcot,mangdodai,clx,cly);
 	tao_sott(x1,y1,chieu_cao,sldong,clx,cly);
 }
-
-
-
+void taotextinput(int x, int y ,int x1 ,int y1, char text[], int id)
+{
+	setcolor(MAU_DEN);
+	setfillstyle(1,MAU_TRANG);
+	bar(x, y, x1, y1);
+	rectangle(x, y, x1, y1);
+	
+	setcolor(MAU_DEN);
+	setbkcolor(MAU_TRANG);
+	outtextxy(x1, y1, text);
+	setidvung(x,y,x1,y1,id);
+}
 ///////////////////////////////////////////////////////////////////// PHAN TEXT ///////////////////////////////////////////////////////////
 
 char *Chuan_Hoa(char *a)// chuan hoa nhap vao, chuyen thanh dang Anh Em Oi  
@@ -162,6 +188,8 @@ char *Chuan_Hoa(char *a)// chuan hoa nhap vao, chuyen thanh dang Anh Em Oi
 }
 ////////////////////////////////BAT KI TU TU BAN PHIM//////////////////////////////////////////
 void Nhap(int x, int y,int &luu_id, char s[]) {
+	setbkcolor(MAU_TRANG);
+	setcolor(MAU_DEN);
 	int l=strlen(s) ;
 	 s[l+1]='\0';
     s[l]='|'; 
@@ -218,8 +246,10 @@ void Nhap(int x, int y,int &luu_id, char s[]) {
 	 } 
 	
 } 
-void Nhapso(int x, int y ,int &luu_id, char s[])
+void Nhapso(int x, int y ,int &luu_id, char s[],int chieudai)
 {
+	setbkcolor(MAU_TRANG);
+	setcolor(MAU_DEN);
 	int l=strlen(s) ;
 	s[l+1]='\0';
     s[l]='|'; 
@@ -261,8 +291,15 @@ void Nhapso(int x, int y ,int &luu_id, char s[])
 			else if(c==13) {
 				s[l]='\0';// xoa dau cach o cuoi chuoi  
 				return; 
-			} 
-			 	
+			}
+			if(strlen(s)>=chieudai)
+			{
+				delay(50);
+				s[l-1]='|';
+					s[l]=' ';
+					outtextxy(x,y,s);
+					l--;	
+			} 	 	
 		 }
 		 else{
 			s[l]='|';
@@ -275,19 +312,69 @@ void Nhapso(int x, int y ,int &luu_id, char s[])
 		}	
 	 } 	
 }
-
-void taotextinput(int x, int y ,int x1 ,int y1, char text[], int id)
-{
-	setcolor(MAU_DEN);
-	setfillstyle(1,MAU_TRANG);
-	bar(x, y, x1, y1);
-	rectangle(x, y, x1, y1);
-	
-	setcolor(MAU_DEN);
+void NhapInHoa(int x, int y,int &luu_id, char s[]) {
 	setbkcolor(MAU_TRANG);
-	outtextxy(x1, y1, text);
-	setidvung(x,y,x1,y1,id);
-}
+	setcolor(MAU_DEN);
+	int l=strlen(s) ;
+	 s[l+1]='\0';
+    s[l]='|'; 
+     while(1){
+       	
+		outtextxy(x,y,s);
+		int id=luu_id;
+		if(ismouseclick(WM_LBUTTONDOWN)){
+			getmouseclick(WM_LBUTTONDOWN, x, y);
+			id = MapID[x][y];
+			clearmouseclick(WM_LBUTTONDOWN);
+		}
+		if(id!=luu_id)
+		{
+			luu_id=id;
+			s[l]='\0';
+			l--;
+			return;
+		}
+     	if(kbhit()){
+	     	char c= getch();
+	     	if('a'<=c&&c<='z'||'A'<=c&&c<='Z'||'0'<=c&&c<='9')
+	     	{
+	     		if('a'<=c&&c<='z')
+	     		{
+	     			c=c-32;
+				 }
+		     	s[l]=c;
+				 l++;
+				 s[l+1]='\0';
+				 outtextxy(x,y,s);
+			}
+			else if(c==8){
+				if(l>0)
+				{
+					s[l-1]='|';
+					s[l]=' ';
+					outtextxy(x,y,s);
+					l--;	
+				}	
+			} 
+			else if(c==13) {
+				s[l]='\0';// xoa dau cach o cuoi chuoi  
+				break; 
+			} 
+
+			 	
+		 }
+		 else{
+			s[l]='|';
+			delay(100);
+			outtextxy(x,y,s);
+			s[l]=' ';
+			delay(100);			 
+			outtextxy(x,y,s);
+		 
+		}	
+	 } 
+	
+} 
 int tong(int a[],int n)
 {
 	int tong=0;
@@ -297,4 +384,3 @@ int tong(int a[],int n)
 	}
 	return tong;
 }
-

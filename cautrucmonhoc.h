@@ -6,7 +6,7 @@ using namespace std;
 struct MonHoc{
 	char maMH[10]="";
 	char tenMH[50]="";
-	int STCLT,STCTH;
+	int STCLT=0,STCTH=0;
 };
 struct Node{
 	MonHoc monhoc;
@@ -16,26 +16,6 @@ struct Node{
 struct CayNhiPhan{
 	Node *root=NULL;
 };
-void chuyen_so_thanh_chuoi(int n,char res[]) {
-	char s[4];
-	int k = 0;
-	while(n){
-		s[k++] = n % 10 + 48;
-		n /= 10;
-	}
-	for(int i = k - 1; i >= 0; i--) {
-		res[k - 1 - i] = s[i];
-	}
-	res[k] = '\0';
-}
-int chuyen_chuoi_thanh_so(char res[]) {
-	int n=0;
-	for(int i=0;i<strlen(res);i++)
-	{
-		n=n*10+(res[i]-48);
-	}
-	return n;
-}
 void XuatMH(int x,int &y,MonHoc MH,int mangdodai_mh[])
 {
 	outtextxy(x=x+10,y+5,MH.maMH);
@@ -110,17 +90,22 @@ void LNR1(Node *root,int socot,MonHoc &mh)
     	}
    	}	
 }
-void LNR(int x,int y,Node *root,int mangdodai_mh[])
+void LNR(int x,int y,Node *root,int mangdodai_mh[],int trangso)
 {
 	Node *pre;
 	Node *current=root;
+	int i=1;
 	while (current)
     {
 		if (!current->pLeft)
     	{
-    		y=y+30;
-   		    XuatMH(x,y,current->monhoc,mangdodai_mh);
-    	    current = current->pRight;
+    		if(i>14*(trangso-1)&&i<=14*trangso)
+    		{
+    			y=y+30;
+   			    XuatMH(x,y,current->monhoc,mangdodai_mh);
+			}
+			i++;
+			current = current->pRight;	
     	}
     	else
     	{
@@ -136,10 +121,14 @@ void LNR(int x,int y,Node *root,int mangdodai_mh[])
      		}
      		else
      		{
-     			y=y+30;
-      			XuatMH(x,y,current->monhoc,mangdodai_mh);
-      			pre->pRight = NULL;
-      			current = current->pRight;
+     			if(i>14*(trangso-1)&&i<=14*trangso)
+     			{
+     				y=y+30;
+      				XuatMH(x,y,current->monhoc,mangdodai_mh);
+      				pre->pRight = NULL;
+				}
+				i++;
+				current = current->pRight;     			
      		}
     	}
    	}
@@ -261,4 +250,12 @@ void KiemTraMMH(Node *root,char a[],int &kt)
 		}
 		KiemTraMMH(root->pRight,a,kt);
 	}
+}
+bool KT_Nhap_MH(MonHoc mh)
+{
+	if(strlen(mh.maMH)>2&&strlen(mh.tenMH)>2&&mh.STCLT>0&&mh.STCTH>=0)
+	{
+		return true;
+	}
+	return false;
 }

@@ -24,26 +24,35 @@ NodeSinhVien *TaoMotSV(SinhVien SV){
 }
 void Xuat1SV(int x,int y,SinhVien sv,int mangdodai[])
 {
+	char hoten[51];
 	outtextxy(x=x+10,y,sv.malop);
 	outtextxy(x=x+mangdodai[2],y,sv.mSV);
-	outtextxy(x=x+mangdodai[3],y,sv.ho);
-	outtextxy(x+strlen(sv.ho)*20,y,sv.ten);
+	strcpy(hoten,sv.ho);
+	strcat(hoten," ");
+	strcat(hoten,sv.ten);
+	outtextxy(x=x+mangdodai[3],y,hoten);
 	outtextxy(x=x+mangdodai[4],y,sv.sdt);
 	if(sv.phai==true)
 		outtextxy(x=x+mangdodai[5],y,"nam");
 	else
 		outtextxy(x=x+mangdodai[5],y,"nu");
 }
-void XuatDanhSach(int x,int y,NodeSinhVien *first,int mangdodai[])
+void XuatDanhSach(int x,int y,NodeSinhVien *first,int mangdodai[],int trangso)
 {
+	int i=1;//bien dem so sv
 	for (NodeSinhVien *k = first; k != NULL; k = k->next)
 	{
 		if(strcmp(first->sv.malop,k->sv.malop)!=0)
 		{
 			return;
 		}	
-		Xuat1SV(x,y,k->sv,mangdodai);
-			y=y+30;	
+		if(i>14*(trangso-1)&&i<=14*trangso)//neu
+		{
+			Xuat1SV(x,y,k->sv,mangdodai);
+			y=y+30;
+		}
+	
+			i++;
 	}
 }
 void ThemCuoi(NodeSinhVien*& first, NodeSinhVien *p)
@@ -99,81 +108,72 @@ void KTho(NodeSinhVien *&first,NodeSinhVien *p)
 		}
 	}
 }
-void them(NodeSinhVien *&first, NodeSinhVien *p,char key[]){
-//	NodeSinhVien *k = first;
-	if(first == NULL)//danh sach rong
-	{
-		first=p;
-	}
-//	else if(strcmp(p->sv.ten,k->sv.ten)==0)
-//	{
-//		NodeSinhVien *a;
-//		for (; k != NULL; k = k->next)
-//		{
-//			a=k;
-//			if(strcmp(p->sv.ho,k->sv.ho)<0)
-//			{
-//				break;
-//			}
-//			else 
-//			{
-//				if(strcmp(p->sv.ten,k->next->sv.ten)!=0)
-//				{
-//					k = k->next;
-//					break;
-//				}
-//			}
-//		}	
-//		
-//	}
-	else if(stricmp(p->sv.ten,first->sv.ten)<0)//neu ten sv p nho hoen ten sv dau ds thi them dau
-	{
-		ThemDau(first,p);
-	}
-	else
-	{
-		for (NodeSinhVien *k = first; k != NULL; k = k->next)
-		{
-			if(k->next==NULL)
-			{
-				k->next = p; //them vao cuoi ds
-				break;
-			}
-			else if (stricmp(p->sv.ten,k->next->sv.ten)<0||stricmp(k->next->sv.malop,key)!=0)
-			//ten sv p <ten sv k thi them sao ds o vi tri truoc k||va malop cua sv k bang voi key
-			{
-				NodeSinhVien* tam =k->next;
-				k->next=p;
-				p->next=tam;
-				break;
-			}
-		}	
-	}
-}
 void ThemSVvaolop(NodeSinhVien *&first,SinhVien &SV)
 {
+	NodeSinhVien *truoc=NULL;
+	NodeSinhVien *p=TaoMotSV(SV);
 	if(first==NULL)
 	{
-//		nhapSV(SV,0);
-		NodeSinhVien *p=TaoMotSV(SV);
-		them(first,p,SV.malop);
+		first=p;
 	}
 	else		
 	for(NodeSinhVien *k=first;k!=NULL;k=k->next)
 	{
-		if(stricmp(k->sv.malop,SV.malop)==0||k->next==NULL)
+		if(stricmp(k->sv.malop,SV.malop)==0)//tim kiem lop de them
 		{
-//			nhapSV(SV,0);
-			NodeSinhVien *p=TaoMotSV(SV);
-			them(k->next,p,SV.malop);
+			for (; k != NULL; k = k->next)
+			{					
+				if (stricmp(p->sv.ten,k->sv.ten)<0||stricmp(k->sv.malop,SV.malop)!=0)
+				//ten sv p <ten sv k thi them sao ds o vi tri truoc k||va malop cua sv k bang voi key
+				{
+					if(truoc==NULL)
+					{
+						ThemDau(first,p);	
+						break;
+					}
+					else
+					{
+						p->next=k;
+						truoc->next=p;
+						break;
+					}		
+				}
+				else if(stricmp(p->sv.ten,k->sv.ten)==0)
+				{
+					 if(stricmp(p->sv.ho,k->sv.ho)<0&&truoc!=NULL)
+					{
+						p->next=k;
+						truoc->next=p;
+						break;
+					}	
+					else if(stricmp(p->sv.ho,k->sv.ho)<0&&truoc==NULL)
+					{
+						ThemDau(first,p);	
+						break;
+					}			
+				}
+				if(k->next==NULL)
+				{
+					k->next = p; //them vao cuoi ds
+					break;
+				}
+				truoc=k;
+			}	
 			break;
 		}
+		else if(k->next==NULL)
+		{
+			k->next=p;
+			break;
+		}
+		truoc=k;
 	}
 }
 void XoaSv(NodeSinhVien *&first,char a[])
-{	NodeSinhVien *p;
+{	
+//NodeSinhVien *p;
 	if (strcmp(first->sv.mSV,a)==0 ) {
-		p=first;
+		NodeSinhVien *p=first;
 		first = p->next ;
 		delete p ;
 	}
@@ -182,110 +182,55 @@ void XoaSv(NodeSinhVien *&first,char a[])
 	{
 		if (strcmp(k->next->sv.mSV,a)==0)
 		{
-			p=k->next;
+			NodeSinhVien *p=k->next;
 			k->next=p->next;
 			delete p;
 			break;
 		}
 	}
 }
-void gan(SinhVien &p,NodeSinhVien* q)
-{
-	for(int i=0;i<50;i++)
-	p.ho[i]=q->sv.ho[i];
-	for(int i=0;i<15;i++)
-	p.malop[i]=q->sv.malop[i];
-	for(int i=0;i<15;i++)
-	p.mSV[i]=q->sv.mSV[i];
-//	p.phai=q->sv.phai;
-	for(int i=0;i<11;i++)
-	p.sdt[i]=q->sv.sdt[i];
-	for(int i=0;i<10;i++)
-	p.ten[i]=q->sv.ten[i];
-}
 void chinh_sua_Sv_coMS(NodeSinhVien *&first,SinhVien SV,char key[])/////chua sua dc
 {
 	XoaSv(first,key);
 	NodeSinhVien *p=TaoMotSV(SV);
-	them(first,p,SV.malop);
-//	if (strcmp(first->sv.mSV,a)==0 ) {
-//		
-//		SinhVien SV;
-//		gan(SV,first);
-//		nhapSV(SV,1);//them vao nhung thu can chinh sua
-//		NodeSinhVien* p = TaoMotSV(SV);// tao mt nodesinhvienmoi
-//		XoaSv(first,first->sv.mSV);
-//		them(first,p);
-//	}
-//	else
-//	for (NodeSinhVien *k = first; k != NULL; k = k->next)
-//	{
-//		if (strcmp(k->next->sv.mSV,key)==0)
-//		{
-//				
-//			k->next->sv=SV;
-////			nhapSV(SV,1);//them vao nhung thu can chinh sua
-////			NodeSinhVien* p = TaoMotSV(SV);// tao mt nodesinhvienmoi
-////			XoaSv(first,k->next->sv.mSV);
-////			ThemSVvaolop(first,SV);
-//////			them(first,p);
-////			break;	
-//		}
-//	}
-}
-void WriteFileSV(char *FileName,SinhVien SV)  
-{  
-	FILE *f;      	
-	f=fopen(FileName,"ab");  
-	fwrite(&SV,sizeof(SV),1,f); 
-	fclose(f);   
-}  
-void doc_tu_file_vao_dslkd(char *FileName,NodeSinhVien *&first)
-{
-		FILE *f;   
-		SinhVien SV;   
-	f=fopen(FileName,"rb");
-	fread(&SV,sizeof(SV),1,f); 
-	while (!feof(f))  
-	{  
-	NodeSinhVien* p = TaoMotSV(SV);
-		ThemSVvaolop(first,SV);
-		fread(&SV,sizeof(SV),1,f);  
-	}  	  
-	fclose(f); 
-}
-void vietSVvaofile(NodeSinhVien *&first)
-{
-	for(NodeSinhVien *k=first;k!=NULL;k=k->next)
-	{
-		WriteFileSV("Sinhvien.dat",k->sv);
-	}
+	ThemSVvaolop(first,SV);
 }
 
-void XuatDSlop(int x,int y,NodeSinhVien *first,int mangdodai_lh[])
+
+void XuatDSlop(int x,int y,NodeSinhVien *first,int mangdodai_lh[],int trangso)
 {
-	outtextxy(x=x+10,y+5,first->sv.malop);
 	int soluong=0;
+	int i=1;
 	char sl[4];
-	NodeSinhVien *tam=first;
-	for(NodeSinhVien *k=first;k!=NULL;k=k->next)
+	NodeSinhVien *tam=first;//giu ma lop dau ds
+	if(i>14*(trangso-1)&&i<=14*trangso)
+	outtextxy(x=x+10,y+5,first->sv.malop);//in ra lop dau tien
+	for(NodeSinhVien *k=first;k!=NULL;k=k->next)//duyet ds de dam sl sinh vien va in ra cac lop
 	{
+		//dem so luong SV cua lop
+		if(strcmp(k->sv.malop,tam->sv.malop)!=0)//gap mot lop khac lop da in
+		{
+			if(i>14*(trangso-1)&&i<=14*trangso)
+			{
+				chuyen_so_thanh_chuoi(soluong,sl);
+				outtextxy(x+mangdodai_lh[2],y+5,sl);
+				y=y+30;
+				outtextxy(x,y+5,k->sv.malop);
+				soluong=0;//cap nhat lai so luong SV =0 de bat dau dem SV lop tiep theo
+				tam=k;//giu lai ma lop vua in
+			}
+			i++;			
+		}
+		if(k->next==NULL)//cuoi ds in so luong sinh vien cua lop cuoi cung
+		{
+			if(i>14*(trangso-1)&&i<=14*trangso)
+			{
+				soluong++;
+				chuyen_so_thanh_chuoi(soluong,sl);
+				outtextxy(x+mangdodai_lh[2],y+5,sl);
+			}			
+		}
 		soluong++;
-		if(strcmp(k->sv.malop,tam->sv.malop)!=0)
-		{
-			chuyen_so_thanh_chuoi(soluong,sl);
-			outtextxy(x+mangdodai_lh[2],y+5,sl);
-			y=y+30;
-			outtextxy(x,y+5,k->sv.malop);
-			soluong=0;
-			tam=k;
-		}
-		if(k->next==NULL)
-		{
-			soluong++;
-			chuyen_so_thanh_chuoi(soluong,sl);
-			outtextxy(x+mangdodai_lh[2],y+5,sl);
-		}
 	}
 }
 void timLopSV(NodeSinhVien *first,int socot,char malop[])
@@ -311,7 +256,7 @@ void timLopSV(NodeSinhVien *first,int socot,char malop[])
 }
 void timSV(NodeSinhVien *first,int socot,SinhVien &SV)
 {
-	for(NodeSinhVien *k=first;k!=0;k=k->next)
+	for(NodeSinhVien *k=first;k!=NULL;k=k->next)
 	{
 		if(socot==1)
 		{
@@ -319,5 +264,51 @@ void timSV(NodeSinhVien *first,int socot,SinhVien &SV)
 			break;				
 		}	
 		socot--;
+	}
+}
+bool Kiem_tra_nhapSV(SinhVien SV)
+{
+	if(strlen(SV.mSV)==10&&strlen(SV.sdt)>=9&&strlen(SV.sdt)<=11&&strlen(SV.ho)>=2&&strlen(SV.ten)>0)
+	{
+		return true;
+	}
+	return false;
+}
+bool Kiem_tra_MaSV(NodeSinhVien *first,char masv[])
+{
+	for(NodeSinhVien *k=first;k!=NULL;k=k->next)
+	{
+		if(strcmp(k->sv.mSV,masv)==0)
+		{
+			return false;
+		}
+	}
+	return true;
+}
+void WriteFileSV(char *FileName,SinhVien SV)  
+{  
+	FILE *f;      	
+	f=fopen(FileName,"ab");  
+	fwrite(&SV,sizeof(SV),1,f); 
+	fclose(f);   
+}  
+void doc_tu_file_vao_dslkd(char *FileName,NodeSinhVien *&first)
+{
+		FILE *f;   
+		SinhVien SV;   
+	f=fopen(FileName,"rb");
+//	fread(&SV,sizeof(SV),1,f); 
+	while (fread(&SV,sizeof(SV),1,f))  
+	{  
+		NodeSinhVien* p = TaoMotSV(SV);
+		ThemSVvaolop(first,SV);		
+	}  	  
+	fclose(f); 
+}
+void vietSVvaofile(NodeSinhVien *&first)
+{
+	for(NodeSinhVien *k=first;k!=NULL;k=k->next)
+	{
+		WriteFileSV("Sinhvien.dat",k->sv);
 	}
 }

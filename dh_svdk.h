@@ -32,7 +32,6 @@ void taobangmenu_svdk()
 
 void svdk_thongtinsv()
 {
-	setmapid();
 	setbkcolor(MAU_TRANG);
 	setcolor(MAU_DEN);
 	
@@ -76,11 +75,22 @@ void svdk_thongtinsv()
 	taobutton(1360,60,"NAM",130,30,MAU_XAM,MAU_DEN,20,5,317);
 	taobutton(1360,100,"NU",130,30,MAU_XAM,MAU_DEN,20,5,318);
 	
-	taobutton(1355,170,"TIM KIEM",155,30,MAU_XANHDUONG,MAU_TRANG,10,5,343);
+	taobutton(1355,170,"TIM KIEM",155,30,MAU_XANHDUONG,MAU_TRANG,10,5,361);
+	taobutton(1200,210,"SAVE",155,30,MAU_XANHDUONG,MAU_TRANG,10,5,362);
+	rectangle(315,270,1520,780);
+	
+	
+	int sldong=15;
+	int slcot=7;
+	int mangdodai_svdk[]={0,80,173,273,173,173,173,100};
+	int chieu_cao=30;
+	char svdk[][50]={"","STT","MMH","TEN MH","NHOM","SVDDK","CL","CHON"};
+	taobang(325,280,chieu_cao,mangdodai_svdk,slcot,sldong,svdk,10,5,200);		
+	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,00);
+	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,00);
 }
 void bangchon_svdk()
 {
-	setmapid();
 	setbkcolor(MAU_TRANG);
 	setcolor(MAU_DEN);
 	rectangle(315,270,1520,780);
@@ -96,40 +106,71 @@ void bangchon_svdk()
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,00);
 	
 }
-void xuly_dohoa_svdk()
+void xuly_dohoa_svdk(int &luu_id,DSloptinchi &dsltc,NodeSinhVien *&first,SinhVien SV)
 {
 	svdk_thongtinsv();
-	int luu_id=0;
 	int x=-1, y=-1;
 	int id=0;
-	while(true){	
-		//Bat chuot	
-		id=luu_id;
+	int kt[15];
+	for(int i=0;i<15;i++)
+	kt[i]=0;	
+	char nienkhoa[50]="";
+	char hocky[50]="";
+	outtextxy(465,45,SV.malop);
+	outtextxy(975,45,SV.mSV);
+	outtextxy(465,95,SV.ho);
+	outtextxy(975,95,SV.ten);
+	outtextxy(465,145,SV.sdt);
+	while(true){
+		//Bat chuot
 		if(ismouseclick(WM_LBUTTONDOWN)){
 			getmouseclick(WM_LBUTTONDOWN, x, y);
 			id = MapID[x][y];
 			clearmouseclick(WM_LBUTTONDOWN);
 		}
-		if (id==4)
+		if(id==4)
 		{
 			luu_id=id;
 			break;
 		}
 		switch(id){
 			case 343:
-				taobangmenu_svdk();
-				svdk_thongtinsv();
-				bangchon_svdk();
+				
 				break;
 			case 998:
-				Nhap(995,195,id,"");
+				Nhap(995,195,id,hocky);
 				break;
 			case 999:
-				Nhap(515,195,id,"");
+				Nhap(515,195,id,nienkhoa);
+				break;	
+			case 361:
+				Xuat_DS_LTC_DK(405,315,dsltc,nienkhoa,hocky);	
+				id=0;
 				break;
-				
-			
+			case 362:
+				remove("Loptinchi.dat");
+				vietLTCvaofile(dsltc);
+				id=0;
+				break;
+		}
+		if(id>200&&id<214)
+		{
+			if(kt[id-200]==0)
+			{
+				outtextxy(1400,315+30*(id-201),"v");	
+				tim_ltc_de_them_svdk(dsltc,SV.mSV,id-200,nienkhoa,hocky);
+				Xuat_DS_LTC_DK(405,315,dsltc,nienkhoa,hocky);
+				kt[id-200]=1;			
+			}
+			else if(kt[id-200]==1)
+			{
+				outtextxy(1400,315+30*(id-201),"  ");
+				tim_ltc_de_Xoa_svdk(dsltc,SV.mSV,id-200,nienkhoa,hocky);
+				Xuat_DS_LTC_DK(405,315,dsltc,nienkhoa,hocky);
+				kt[id-200]=0;
+			}
+			id=0;
 		}
 		delay(0.001);
-}
+	}
 }
