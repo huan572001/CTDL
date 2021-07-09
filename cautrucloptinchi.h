@@ -3,25 +3,29 @@
 using namespace std;
 #include"SVDK.h"
 #include<string.h>
-#define MAXLTC 10000
+#include<ctime>
+#include "define.h"
 struct LopTinChi{
 	int maLTC=0;
-	char maMH[10]="";
-	char nienKhoa[10]="";
+	char maMH[ma_MH]="";
+	char nienKhoa[NienKhoa]="";
 	int hocKy=0;
 	int nhom=0;
 	int minsv=0;
 	int maxsv=0;
-	bool trangthai;
+	bool trangthai=true;
 	DSSVDK dsSVDK;
 };
 struct DSloptinchi{
 	LopTinChi *DSltc=new LopTinChi[MAXLTC];
 	int soluong;
+	int Time[MAXLTC];
 };
 void NhapDSLopTinChi(DSloptinchi &ds,LopTinChi &ltc)
 {
 		ds.DSltc[ds.soluong]=ltc;
+		time_t now= time('\0');//thoi gian luc moi them
+		ds.Time[ds.soluong]=now;	
 		ds.soluong++;
 }
 void xuat1loptinchi(int x,int &y,LopTinChi ltc,int mangdodai_ltc[])
@@ -48,6 +52,7 @@ void Xuatds(int x,int y,DSloptinchi ds,int mangdodai_ltc[])
 }
 void Xoa(DSloptinchi &ds,int vt)
 {
+	Xoa_ALL_SVDK(ds.DSltc[vt].dsSVDK.first);
 	for(int i=vt;i<ds.soluong;i++)
 	{
 		ds.DSltc[i]=ds.DSltc[i+1];
@@ -65,6 +70,15 @@ void XoaLTC(DSloptinchi &ds,char mMH[])
 		}
 	}
 }
+void XoaALLltc(DSloptinchi &ds)
+{
+	while(ds.soluong>0)
+	{
+		Xoa_ALL_SVDK(ds.DSltc[ds.soluong].dsSVDK.first);
+		ds.soluong--;
+	}
+	delete[] ds.DSltc;
+}
 void chinh_Sua(DSloptinchi &ds,LopTinChi &ltc)
 {
 	for(int i=0;i<ds.soluong;i++)
@@ -75,74 +89,9 @@ void chinh_Sua(DSloptinchi &ds,LopTinChi &ltc)
 		}
 	}
 }
-
-//void Nhap_diemLTC(DSloptinchi &dsltc,NodeSinhVien *&firstSV)
-//{
-//	char MMH[10];
-//	char NK[10];
-//	int HK;
-//	int N;
-//	int chay=0;
-//	cout<<"\n\tNhap vao nien khoa: ";
-//	cin>>NK;
-//	cout<<"\n\tNhap vao hoc ky: ";
-//	cin>>HK;
-//	cout<<"\n\tNhom: ";
-//	cin>>N;
-//	cout<<"\n\tnhap ma mon hoc: ";
-//	cin>>MMH;
-//	for(int i=0;i<dsltc.soluong;i++)
-//	{
-//		if(strcmp(NK,dsltc.DSltc[i].nienKhoa)==0&&HK==dsltc.DSltc[i].hocKy&&N==dsltc.DSltc[i].nhom,strcmp(MMH,dsltc.DSltc[i].maMH)==0)
-//		{
-//			while(true)
-//			{
-//				system("cls");
-//				int j=0;
-//				cout<<"\n\tchon 0 de thoat: ";
-//				for(NodeSVDK *k=dsltc.DSltc[i].dsSVDK.first;k!=NULL;k=k->next)
-//				{
-//					cout<<"\n--------------------STT"<<j+1<<"-----------------------";
-//					for (NodeSinhVien *h = firstSV; h != NULL; h = h->next)
-//					{
-//						if(strcmp(k->svdk.maSV,h->sv.mSV)==0)
-//						{
-//							cout<<"\n\tMa SV: "<<h->sv.mSV;
-//							cout<<"\n\tHo ten: "<<h->sv.ho<<" "<<h->sv.ten;
-//							cout<<"\n\tDiem: "<<k->svdk.diem;
-//							break;
-//						}
-//					}
-//					j++;
-//				}
-//				
-//				int l=0;
-//				do
-//				{
-//					cout<<"\n\tChon STT sinh vien can them diem: ";
-//					cin>>chay;
-//				}while(chay>j);
-//				for(NodeSVDK *k=dsltc.DSltc[i].dsSVDK.first;l!=chay;k=k->next)
-//				{
-//					l++;
-//					if(l==chay)
-//					{
-//						cout<<"\n\tNhap diem: ";
-//						cin>>k->svdk.diem;
-//					}
-//				}
-//				if(chay==0)
-//				{
-//					break;
-//				}
-//			}
-//			break;
-//		}
-//	}
-//}
 bool KT_nhap_LTC(LopTinChi ltc)
 {
-	if(ltc.hocKy>0&&ltc.maxsv>0&&ltc.minsv&&ltc.maxsv>ltc.minsv&&ltc.nhom>0&&strlen(ltc.maMH)>2)
+	if(ltc.hocKy>0&&ltc.maxsv>0&&ltc.minsv&&ltc.maxsv>ltc.minsv&&ltc.nhom>0&&strlen(ltc.maMH)>0)
 	{
 		return true;
 	}
@@ -157,12 +106,11 @@ bool KT_LTC_chung(DSloptinchi &dsltc,int mltc)
 	}
 	return true;
 }
-void Xuat_mot_ltc_dk(int x,int y,LopTinChi ltc,int mangdodai[])
+void Xuat_mot_ltc_dk(int x,int y,LopTinChi ltc,Node *root,int mangdodai[],char maSV[])
 {
 		char tam[5];
-		chuyen_so_thanh_chuoi(ltc.maLTC,tam);
-		outtextxy(x=x+10,y,tam);
-		outtextxy(x=x+mangdodai[2],y,ltc.maMH);
+		outtextxy(x=x+10,y,ltc.maMH);
+		Tim_MMH(x=x+mangdodai[2],y,root,ltc.maMH);
 		chuyen_so_thanh_chuoi(ltc.nhom,tam);
 		outtextxy(x=x+mangdodai[3],y,tam);
 		if(soluongSVDK(ltc.dsSVDK.first)==0)
@@ -181,57 +129,66 @@ void Xuat_mot_ltc_dk(int x,int y,LopTinChi ltc,int mangdodai[])
 			chuyen_so_thanh_chuoi(ltc.maxsv-soluongSVDK(ltc.dsSVDK.first),tam);
 			outtextxy(x=x+mangdodai[5],y,tam);	
 		}
+		if(KT_Svdk_chua(ltc.dsSVDK.first,maSV)==true)
+		outtextxy(x=x+mangdodai[6]+20,y,"v");
+		else
+		outtextxy(x=x+mangdodai[6]+20,y,"  ");
 }
-void Xuat_DS_LTC_DK(int x,int y,DSloptinchi dsltc,char nienkhoa[], char hocky[])
+void Xuat_DS_LTC_DK(int x,int y,DSloptinchi dsltc,Node *root,char nienkhoa[], char hocky[],char maSV[])
 {
 	int mangdodai_svdk[]={0,80,173,273,173,173,173,100};
 	for(int i=0;i<dsltc.soluong;i++)
 	{
-		if(strcmp(nienkhoa,dsltc.DSltc[i].nienKhoa)==0&&chuyen_chuoi_thanh_so(hocky)==dsltc.DSltc[i].hocKy)
+		if(strcmp(nienkhoa,dsltc.DSltc[i].nienKhoa)==0&&chuyen_chuoi_thanh_so(hocky)==dsltc.DSltc[i].hocKy&&dsltc.DSltc[i].trangthai==true)
 		{
-			Xuat_mot_ltc_dk(x,y,dsltc.DSltc[i],mangdodai_svdk);
+			Xuat_mot_ltc_dk(x,y,dsltc.DSltc[i],root,mangdodai_svdk,maSV);
 			y=y+30;
 		}
 	}
 }
-void tim_ltc_de_them_svdk(DSloptinchi &dsltc,char mSV[],int vt,char nienkhoa[],char hocky[])
+int tim_ltc(DSloptinchi &dsltc,int vt,char nienkhoa[],char hocky[])
 {
-	SVDK SV;
-	for(int i=0;i<dsltc.soluong;i++)
+	int i=0;
+	for(;i<dsltc.soluong;i++)
 	{
 		if(strcmp(nienkhoa,dsltc.DSltc[i].nienKhoa)==0&&chuyen_chuoi_thanh_so(hocky)==dsltc.DSltc[i].hocKy)
 		{
 			if(vt==1)
 			{
-				strcpy(SV.maSV,mSV);
-				ThemDauSVDK(dsltc.DSltc[i].dsSVDK.first,SV);
-				break;
+				return i;
 			}
 			vt--;
 		}
 	}
+	return i;
 }
-void tim_ltc_de_Xoa_svdk(DSloptinchi &dsltc,char mSV[],int vt,char nienkhoa[],char hocky[])
+bool KT_SV_DK_LTC(DSloptinchi dsltc,char maSV[])
 {
 	for(int i=0;i<dsltc.soluong;i++)
 	{
-		if(strcmp(nienkhoa,dsltc.DSltc[i].nienKhoa)==0&&chuyen_chuoi_thanh_so(hocky)==dsltc.DSltc[i].hocKy)
+		for(NodeSVDK *k=dsltc.DSltc[i].dsSVDK.first;k!=NULL;k=k->next)
 		{
-			cout<<vt<"  ";
-			if(vt==1)
-			{
-				XoaSvDK(dsltc.DSltc[i].dsSVDK.first,mSV);
-				break;
-			}
-			vt--;
+			if(strcmp(k->svdk.maSV,maSV)==0)
+			return true;
 		}
 	}
+	return false;
 }
-void WriteFileLTC(char *FileName,LopTinChi &ltc)  
+bool KT_MH_Da_Duoc_Tao_LTC(DSloptinchi dsltc,char MaMH[])
+{
+	for(int i=0;i<dsltc.soluong;i++)
+	{
+		if(strcmp(dsltc.DSltc[i].maMH,MaMH)==0)
+		return true;
+	}
+	return false;
+}
+void WriteFileLTC(char *FileName,LopTinChi &ltc,int time)  
 {
 		FILE *f;      	
 	f=fopen(FileName,"ab");  
 	fwrite(&ltc,sizeof(ltc),1,f);//viet lop tin chi vao trong file
+	fwrite(&time,sizeof(time),1,f);//viet time vao file
 	int n=soluongSVDK(ltc.dsSVDK.first);//so luong sinh vien dang ky
 	fwrite(&n,sizeof(n),1,f);//viet so luong sinh vien dk vao trong file
 	for(NodeSVDK *k=ltc.dsSVDK.first;k!=NULL;k=k->next)//duyet ds sinh vien de viet vao file
@@ -252,6 +209,7 @@ void doc_tu_file_vao_LTC(char *FileName,DSloptinchi &dsltc)
 	//doc tu file de lay lop tin chi
 		dsltc.DSltc[dsltc.soluong]=ltc;//gan lop tin chi vao dsltc[i]
 		dsltc.DSltc[dsltc.soluong].dsSVDK.first=NULL;
+		fread(&dsltc.Time[dsltc.soluong],sizeof(dsltc.Time[dsltc.soluong]),1,f);
 		fread(&n,sizeof(n),1,f);//doc tu file de lay so luong svdk
 		for(int i=0;i<n;i++)
 		{
@@ -268,6 +226,30 @@ void vietLTCvaofile(DSloptinchi &dsltc)
 {
 	for(int i=0;i<dsltc.soluong;i++)//duyet danh sach lop tin chi de viet vao file
 	{
-		WriteFileLTC("Loptinchi.dat",dsltc.DSltc[i]);
+		WriteFileLTC("Loptinchi.dat",dsltc.DSltc[i],dsltc.Time[i]);
 	}
+}
+void KT_Huy_Lop(DSloptinchi &dsltc)
+{
+	time_t now= time('\0');
+	for(int i=0;i<dsltc.soluong;i++)
+	{
+		if(now-dsltc.Time[i]>60*60*48&&soluongSVDK(dsltc.DSltc[i].dsSVDK.first)<dsltc.DSltc[i].minsv)
+		{
+			dsltc.DSltc[i].trangthai=false;
+		}
+	}
+}
+void Tu_Dong_Huy_LTC(DSloptinchi &dsltc)
+{
+	for(int i=0;i<dsltc.soluong;i++)
+	{
+		if(dsltc.DSltc[i].trangthai==false&&soluongSVDK(dsltc.DSltc[i].dsSVDK.first)==0)
+		{
+			Xoa(dsltc,i);
+			i--;
+		}
+	}
+//	remove("Loptinchi.dat");
+//	vietLTCvaofile(dsltc);
 }

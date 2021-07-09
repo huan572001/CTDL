@@ -2,10 +2,11 @@
 #include<iostream>
 #include<string.h>
 #include "funtion.h"
+#include "define.h"
 using namespace std;
 struct MonHoc{
-	char maMH[10]="";
-	char tenMH[50]="";
+	char maMH[ma_MH]="";
+	char tenMH[Ten_MH]="";
 	int STCLT=0,STCTH=0;
 };
 struct Node{
@@ -13,9 +14,9 @@ struct Node{
 	Node *pLeft;
 	Node *pRight;
 };
-struct CayNhiPhan{
-	Node *root=NULL;
-};
+//struct CayNhiPhan{
+//	Node *root=NULL;
+//};
 void XuatMH(int x,int &y,MonHoc MH,int mangdodai_mh[])
 {
 	outtextxy(x=x+10,y+5,MH.maMH);
@@ -28,7 +29,6 @@ void XuatMH(int x,int &y,MonHoc MH,int mangdodai_mh[])
 }
 void ThemNode(Node *&root, MonHoc MH)
 {
-	
 	// n?u cây r?ng
 	if (root == NULL)
 	{
@@ -40,11 +40,11 @@ void ThemNode(Node *&root, MonHoc MH)
 	}
 	else
 	{
-		if (stricmp(MH.maMH,root->monhoc.maMH) >0)
+		if (strcmp(MH.tenMH,root->monhoc.tenMH) >0)
 		{
 			ThemNode(root->pRight, MH);
 		}
-		else if (stricmp(MH.maMH,root->monhoc.maMH) <0)
+		else if (stricmp(MH.tenMH,root->monhoc.tenMH) <0)
 		{
 			ThemNode(root->pLeft, MH);
 		}
@@ -71,6 +71,7 @@ void LNR1(Node *root,int socot,MonHoc &mh)
      		while (pre->pRight&&pre->pRight != current)
      		{
       			pre = pre->pRight;
+      			
      		}
      		if (!pre->pRight)
      		{
@@ -94,15 +95,18 @@ void LNR(int x,int y,Node *root,int mangdodai_mh[],int trangso)
 {
 	Node *pre;
 	Node *current=root;
-	int i=1;
+	int i=1;	
 	while (current)
     {
+	
 		if (!current->pLeft)
     	{
+    		
     		if(i>14*(trangso-1)&&i<=14*trangso)
     		{
     			y=y+30;
    			    XuatMH(x,y,current->monhoc,mangdodai_mh);
+//   			    cout<<current->monhoc.maMH;
 			}
 			i++;
 			current = current->pRight;	
@@ -125,6 +129,48 @@ void LNR(int x,int y,Node *root,int mangdodai_mh[],int trangso)
      			{
      				y=y+30;
       				XuatMH(x,y,current->monhoc,mangdodai_mh);
+				}
+				pre->pRight = NULL;
+				i++;
+				current = current->pRight;     			
+     		}
+    	}
+   	}
+}
+int LNR_D(Node *root,int trangso)
+{
+    Node *pre;
+	Node *current=root;
+	int dem=0;
+	int i=1;
+	while (current)
+    {
+		if (!current->pLeft)
+    	{
+    		if(i>14*(trangso-1)&&i<=14*trangso)
+    		{
+    		dem++;    
+			}
+			i++;
+			current = current->pRight;	
+    	}
+    	else
+    	{
+     		pre = current->pLeft;
+     		while (pre->pRight&&pre->pRight != current)
+     		{
+      			pre = pre->pRight;
+     		}
+     		if (!pre->pRight)
+     		{
+      			pre->pRight = current;
+      			current = current->pLeft;
+     		}
+     		else
+     		{
+     			if(i>14*(trangso-1)&&i<=14*trangso)
+     			{
+     				dem++;
       				pre->pRight = NULL;
 				}
 				i++;
@@ -132,8 +178,8 @@ void LNR(int x,int y,Node *root,int mangdodai_mh[],int trangso)
      		}
     	}
    	}
+   	return dem;
 }
-
 // CÁCH 1: TÌM NODE TRÁI NH?T C?A CÂY CON PH?I
 void Tim_Node_The_Mang(Node*& X, Node*& Y)
 {
@@ -156,11 +202,11 @@ void XoaNode(Node *&root,char *key)
 	}
 	else
 	{
-		if(stricmp(key,root->monhoc.maMH)>0)
+		if(stricmp(key,root->monhoc.tenMH)>0)
 		{
 			XoaNode(root->pRight,key);
 		}
-		else if(stricmp(key,root->monhoc.maMH)<0)
+		else if(stricmp(key,root->monhoc.tenMH)<0)
 		{
 			XoaNode(root->pLeft,key);
 		}
@@ -182,6 +228,19 @@ void XoaNode(Node *&root,char *key)
 			}
 			delete X;
 		}
+	}
+}
+void XoaALLTree(Node* &root)
+{
+	if(root!=NULL)
+	{
+		XoaALLTree(root->pLeft);
+		if(root->pRight==NULL)
+		{
+			delete root;
+		}
+		else
+		XoaALLTree(root->pRight);
 	}
 }
 void chinh_su_mon_hoc_co_ten(Node* root,MonHoc mh)
@@ -206,13 +265,13 @@ void chinh_su_mon_hoc_co_ten(Node* root,MonHoc mh)
 		}
 	}
 }
-void WriteFileMH(char *FileName,MonHoc mh)  
+void WriteFileMH(char *FileName,MonHoc mh,Node *&root)  
 {  
 	FILE *f;      	
 //	MonHoc mh;
 //	NhapMH(mh,0);
 	f=fopen(FileName,"ab");  
-//	ThemNode(root,mh);
+	ThemNode(root,mh);
 	fwrite(&mh,sizeof(mh),1,f); 
 	fclose(f);   
 }  
@@ -221,12 +280,9 @@ void doc_tu_file_vao_cay(char *FileName,Node *&root)
 		FILE *f;   
 		MonHoc monhoc;   	
 	f=fopen(FileName,"rb");
-	fread(&monhoc,sizeof(monhoc),1,f);  
-	 	ThemNode(root,monhoc);
-	while (!feof(f))  
+	while (fread(&monhoc,sizeof(monhoc),1,f))  
 	{  
 		 ThemNode(root,monhoc);
-		fread(&monhoc,sizeof(monhoc),1,f);  
 	}  	  
 	fclose(f); 
 }
@@ -235,21 +291,48 @@ void vietMHvaofile(Node *&root)
 	if (root != NULL)
 	{
 		vietMHvaofile(root->pLeft);
-		WriteFileMH("monhoc.dat",root->monhoc);
+		WriteFileMH("monhoc.dat",root->monhoc,root);
 		vietMHvaofile(root->pRight);
 	}		
 }
-void KiemTraMMH(Node *root,char a[],int &kt)
+void KiemTraMMH(Node *root,MonHoc MH,int &KT)
 {
-	if (root != NULL)
-	{
-		KiemTraMMH(root->pLeft,a,kt);
-		if(stricmp(root->monhoc.maMH,a)==0)
-		{
-			kt=1;
-		}
-		KiemTraMMH(root->pRight,a,kt);
-	}
+	Node *pre;
+	Node *current=root;
+	while (current)
+    {
+		if (!current->pLeft)
+    	{
+			if(strcmp(current->monhoc.maMH,MH.maMH)==0||strcmp(current->monhoc.tenMH,MH.tenMH)==0)
+			{
+					KT=1;
+			}	
+    	    current = current->pRight;
+    	}
+    	else
+    	{
+     		pre = current->pLeft;
+     		while (pre->pRight&&pre->pRight != current)
+     		{
+      			pre = pre->pRight;
+      			
+     		}
+     		if (!pre->pRight)
+     		{
+      			pre->pRight = current;
+      			current = current->pLeft;
+     		}
+     		else
+     		{
+				if(strcmp(current->monhoc.maMH,MH.maMH)==0||strcmp(current->monhoc.tenMH,MH.tenMH)==0)
+				{
+					KT=1;
+				}						
+      			pre->pRight = NULL;
+      			current = current->pRight;
+     		}
+    	}
+   	}	
 }
 bool KT_Nhap_MH(MonHoc mh)
 {
@@ -258,4 +341,28 @@ bool KT_Nhap_MH(MonHoc mh)
 		return true;
 	}
 	return false;
+}
+void KT_MMH(Node *root,int&KT,char maMH[])
+{
+	if(root!=NULL)
+	{
+		KT_MMH(root->pLeft,KT,maMH);
+		if(strcmp(root->monhoc.maMH,maMH)==0)
+		{
+			KT=1;
+		}
+		KT_MMH(root->pRight,KT,maMH);
+	}
+}
+void Tim_MMH(int x,int y,Node *root,char maMH[])
+{
+	if(root!=NULL)
+	{
+		Tim_MMH(x,y,root->pLeft,maMH);
+		if(strcmp(root->monhoc.maMH,maMH)==0)
+		{
+			outtextxy(x,y,root->monhoc.tenMH);
+		}
+		Tim_MMH(x,y,root->pRight,maMH);
+	}
 }

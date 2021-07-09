@@ -1,7 +1,6 @@
 #pragma once
 #include<iostream>
 using namespace std;
-#include "Monhoc.h"
 #include "cautrucloptinchi.h"
 #include "cautrucsinhvien.h"
 struct SVDK{
@@ -59,35 +58,16 @@ void XoaSvDK(NodeSVDK *&first,char a[])
 		}
 	}
 }
-//void themSVDK(NodeSVDK *&first, SVDK svdk){
-////	NodeSinhVien *k = first;
-//NodeSVDK *p= TaoMotSVDK(svdk);
-//	if(first == NULL)
-//	{
-//		first=p;
-//	}
-//	else if(strcmp(p->svdk.maSV,first->svdk.maSV)<0)
-//	{
-//		ThemDauSVDK(first,p);
-//	}
-//	else
-//	{	for (NodeSVDK *k = first; k != NULL; k = k->next)
-//		{
-//			if(k->next==NULL)
-//			{
-//				k->next = p; 
-//				break;// d?ng l?i
-//			}
-//			 if (strcmp(p->svdk.maSV,k->next->svdk.maSV)<0)
-//			{
-//				NodeSVDK* tam =k->next;
-//				k->next=p;
-//				p->next=tam;
-//				break;// d?ng l?i
-//			}
-//		}	
-//	}
-//}
+void Xoa_ALL_SVDK(NodeSVDK *&first)
+{
+	NodeSVDK *p;
+	while(first!=NULL)
+	{
+		p=first;
+		first=first->next;
+		delete p;
+	}
+}
 void XuatDanhSachSVDK(int x,int y,NodeSVDK *first,NodeSinhVien *firstSV)
 {
 	int mangdodai_diem[]={0,80,350,245,245,225};
@@ -126,6 +106,13 @@ int soluongSVDK(NodeSVDK *first)
 	}
 	return dem;
 }
-
-
+bool KT_Svdk_chua(NodeSVDK *first,char maSV[])
+{
+	for(NodeSVDK *k=first;k!=NULL;k=k->next)
+	{
+		if(strcmp(k->svdk.maSV,maSV)==0)
+		return true;
+	}
+	return false;
+}
 

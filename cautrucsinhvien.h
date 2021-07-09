@@ -5,12 +5,12 @@
 
 
 struct SinhVien{
-	char mSV[15]="";
-	char ho[50]="";
-	char ten[10]="";
+	char mSV[MaSV]="";
+	char ho[Ho]="";
+	char ten[Ten]="";
 	bool phai;//true la nam f la nu
-	char sdt[11]="";
-	char malop[15]="";
+	char sdt[Sdt]="";
+	char malop[Malop]="";
 };
 struct NodeSinhVien{
 	SinhVien sv;
@@ -24,7 +24,7 @@ NodeSinhVien *TaoMotSV(SinhVien SV){
 }
 void Xuat1SV(int x,int y,SinhVien sv,int mangdodai[])
 {
-	char hoten[51];
+	char hoten[Ho+Ten+1];
 	outtextxy(x=x+10,y,sv.malop);
 	outtextxy(x=x+mangdodai[2],y,sv.mSV);
 	strcpy(hoten,sv.ho);
@@ -37,22 +37,22 @@ void Xuat1SV(int x,int y,SinhVien sv,int mangdodai[])
 	else
 		outtextxy(x=x+mangdodai[5],y,"nu");
 }
-void XuatDanhSach(int x,int y,NodeSinhVien *first,int mangdodai[],int trangso)
+void XuatDanhSach(int x,int y,NodeSinhVien *first,int mangdodai[],int trangso,char maLop[])
 {
 	int i=1;//bien dem so sv
 	for (NodeSinhVien *k = first; k != NULL; k = k->next)
 	{
-		if(strcmp(first->sv.malop,k->sv.malop)!=0)
+		if(strcmp(maLop,k->sv.malop)==0)
 		{
-			return;
-		}	
-		if(i>14*(trangso-1)&&i<=14*trangso)//neu
-		{
-			Xuat1SV(x,y,k->sv,mangdodai);
-			y=y+30;
-		}
-	
+			if(i>14*(trangso-1)&&i<=14*trangso)//neu
+			{
+				Xuat1SV(x,y,k->sv,mangdodai);
+				y=y+30;
+			}
 			i++;
+//			if(strcmp(maLop,k->next->sv.malop)!=0)
+//			return;
+		}			
 	}
 }
 void ThemCuoi(NodeSinhVien*& first, NodeSinhVien *p)
@@ -90,24 +90,7 @@ void ThemDau(NodeSinhVien*& first, NodeSinhVien *p)
 		first = p;
 	}
 }
-void KTho(NodeSinhVien *&first,NodeSinhVien *p)
-{
-	for (; first != NULL; first = first->next)
-	{
-		if(strcmp(p->sv.ho,first->sv.ho)<0)
-		{
-			break;
-		}
-		else 
-		{
-			if(strcmp(p->sv.ten,first->next->sv.ten)!=0)
-			{
-				first = first->next;
-				break;
-			}
-		}
-	}
-}
+
 void ThemSVvaolop(NodeSinhVien *&first,SinhVien &SV)
 {
 	NodeSinhVien *truoc=NULL;
@@ -169,6 +152,7 @@ void ThemSVvaolop(NodeSinhVien *&first,SinhVien &SV)
 		truoc=k;
 	}
 }
+
 void XoaSv(NodeSinhVien *&first,char a[])
 {	
 //NodeSinhVien *p;
@@ -187,6 +171,16 @@ void XoaSv(NodeSinhVien *&first,char a[])
 			delete p;
 			break;
 		}
+	}
+}
+void XoaALL_SV(NodeSinhVien *&first)
+{
+	NodeSinhVien *p;
+	while(first!=NULL)
+	{
+		p=first;
+		first=first->next;
+		delete p;
 	}
 }
 void chinh_sua_Sv_coMS(NodeSinhVien *&first,SinhVien SV,char key[])/////chua sua dc
@@ -233,6 +227,16 @@ void XuatDSlop(int x,int y,NodeSinhVien *first,int mangdodai_lh[],int trangso)
 		soluong++;
 	}
 }
+int SL_SV_Lop(NodeSinhVien *first,char malop[])
+{
+	int dem=0;
+		for(NodeSinhVien *k=first;k!=NULL;k=k->next)
+		{
+			if(strcmp(k->sv.malop,malop)==0)
+			dem++;
+		}
+	return dem;
+}
 void timLopSV(NodeSinhVien *first,int socot,char malop[])
 {
 	NodeSinhVien *tam=first;
@@ -254,16 +258,20 @@ void timLopSV(NodeSinhVien *first,int socot,char malop[])
 		}
 	}
 }
-void timSV(NodeSinhVien *first,int socot,SinhVien &SV)
+void timSV(NodeSinhVien *first,int socot,SinhVien &SV,char maLop[])
 {
 	for(NodeSinhVien *k=first;k!=NULL;k=k->next)
 	{
-		if(socot==1)
+		if(strcmp(k->sv.malop,maLop)==0)
 		{
-			SV=k->sv;
-			break;				
-		}	
-		socot--;
+			if(socot==1)
+			{
+				SV=k->sv;
+				break;				
+			}	
+			socot--;
+		}
+
 	}
 }
 bool Kiem_tra_nhapSV(SinhVien SV)

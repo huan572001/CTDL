@@ -188,13 +188,15 @@ char *Chuan_Hoa(char *a)// chuan hoa nhap vao, chuyen thanh dang Anh Em Oi
 }
 ////////////////////////////////BAT KI TU TU BAN PHIM//////////////////////////////////////////
 void Nhap(int x, int y,int &luu_id, char s[]) {
+	int x1=x;
+	int y1=y;
+    int l=strlen(s) ;
+    s[l+1]='\0';
+    s[l]='|'; 
 	setbkcolor(MAU_TRANG);
 	setcolor(MAU_DEN);
-	int l=strlen(s) ;
-	 s[l+1]='\0';
-    s[l]='|'; 
-     while(1){
-       	
+	
+    while(1){
 		outtextxy(x,y,s);
 		int id=luu_id;
 		if(ismouseclick(WM_LBUTTONDOWN)){
@@ -208,6 +210,11 @@ void Nhap(int x, int y,int &luu_id, char s[]) {
 			s[l]='\0';
 			l--;
 			return;
+		}
+		else
+		{
+			x=x1;
+			y=y1;
 		}
      	if(kbhit()){
 	     	char c= getch();
@@ -248,6 +255,8 @@ void Nhap(int x, int y,int &luu_id, char s[]) {
 } 
 void Nhapso(int x, int y ,int &luu_id, char s[],int chieudai)
 {
+		int x1=x;
+	int y1=y;
 	setbkcolor(MAU_TRANG);
 	setcolor(MAU_DEN);
 	int l=strlen(s) ;
@@ -269,6 +278,11 @@ void Nhapso(int x, int y ,int &luu_id, char s[],int chieudai)
 			s[l]='\0';
 //			l--;
 			return;
+		}
+		else
+		{
+			x=x1;
+			y=y1;
 		}
      	if(kbhit()){
 	     	char c= getch();
@@ -313,6 +327,8 @@ void Nhapso(int x, int y ,int &luu_id, char s[],int chieudai)
 	 } 	
 }
 void NhapInHoa(int x, int y,int &luu_id, char s[]) {
+		int x1=x;
+	int y1=y;
 	setbkcolor(MAU_TRANG);
 	setcolor(MAU_DEN);
 	int l=strlen(s) ;
@@ -333,6 +349,11 @@ void NhapInHoa(int x, int y,int &luu_id, char s[]) {
 			s[l]='\0';
 			l--;
 			return;
+		}
+		else
+		{
+			x=x1;
+			y=y1;
 		}
      	if(kbhit()){
 	     	char c= getch();
@@ -384,3 +405,8 @@ int tong(int a[],int n)
 	}
 	return tong;
 }
+void taobarde(int x ,int y ,int x1 ,int y1)//de bang
+{
+	setfillstyle(1,MAU_TRANG);
+	bar(x,y,x1,y1);
+} 

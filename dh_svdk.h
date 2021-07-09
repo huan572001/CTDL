@@ -23,21 +23,20 @@ void taobangmenu_svdk()
 	rectangle(10,325,300,790);
 					    
 //	taobutton(16,16,"MON HOC",280,70,MAU_XAM,MAU_DEN,20,30,1);
-	taobutton(16,91,"LOP TIN CHI",280,70,MAU_XAM,MAU_DEN,20,30,2);
+//	taobutton(16,91,"LOP TIN CHI",280,70,MAU_XAM,MAU_DEN,20,30,2);
 //	taobutton(16,166,"SINH VIEN",280,70,MAU_XAM,MAU_DEN,20,30,3);
 	taobutton(16,241,"DANG XUAT",280,70,MAU_XAM,MAU_DEN,20,30,4);
 											    
 	taobutton_t(70,330,"CHUC NANG",20,10,MAU_XANHLA,MAU_XANHNON,0,0);
 }
-
 void svdk_thongtinsv()
 {
 	setbkcolor(MAU_TRANG);
 	setcolor(MAU_DEN);
 	
 	rectangle(315,15,1520,260);
-	taobarde1(315,15,1520,260);
-	taobarde1(315,270,1520,780);
+//	taobarde(315,15,1520,260);
+	taobarde(315,15,1520,780);
     
     
     taobutton_t(330,40,"MA LOP",130,30,MAU_XAM,MAU_DEN,20,5);
@@ -76,7 +75,7 @@ void svdk_thongtinsv()
 	taobutton(1360,100,"NU",130,30,MAU_XAM,MAU_DEN,20,5,318);
 	
 	taobutton(1355,170,"TIM KIEM",155,30,MAU_XANHDUONG,MAU_TRANG,10,5,361);
-	taobutton(1200,210,"SAVE",155,30,MAU_XANHDUONG,MAU_TRANG,10,5,362);
+	taobutton(1355,210,"SAVE",155,30,MAU_XANHDUONG,MAU_TRANG,10,5,362);
 	rectangle(315,270,1520,780);
 	
 	
@@ -106,16 +105,62 @@ void bangchon_svdk()
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,00);
 	
 }
-void xuly_dohoa_svdk(int &luu_id,DSloptinchi &dsltc,NodeSinhVien *&first,SinhVien SV)
+void HuyLop(LopTinChi ltc)
+{
+	setcolor(MAU_DEN);
+	setfillstyle(1,MAU_TRANG);
+	setlinestyle(0,0,3);
+	bar(510,200,1020,450);
+	tao_o(510,200,1020,450);
+	setlinestyle(0,0,1);
+	taobutton_t(680,220,"THONG BAO",0,0,MAU_TRANG,MAU_DO,0,0);
+	taobutton_t(600,260,"Lop tin chi co Ma Mon Hoc",0,0,MAU_TRANG,MAU_DEN,0,0);
+	taobutton_t(700,300,ltc.maMH,0,0,MAU_TRANG,MAU_DEN,0,0);
+	outtextxy(590,340,"Da bi xoa! Vi khong du sinh vien.");
+	taobutton_k(680,400,"XAC NHAN",180,40,MAU_XANHDUONG,MAU_TRANG,5);
+		int x=-1, y=-1;
+		int id=0;
+	while(true)
+	{
+		if(ismouseclick(WM_LBUTTONDOWN)){
+			getmouseclick(WM_LBUTTONDOWN, x, y);
+			id = MapID[x][y];
+			clearmouseclick(WM_LBUTTONDOWN);
+		}
+		if(id==5)
+		{
+			break;
+		}
+		delay(0.001);
+	}
+	
+}
+void xuly_dohoa_svdk(int &luu_id,DSloptinchi &dsltc,NodeSinhVien *&first,SinhVien SV,Node *root)
 {
 	svdk_thongtinsv();
 	int x=-1, y=-1;
 	int id=0;
-	int kt[15];
-	for(int i=0;i<15;i++)
-	kt[i]=0;	
-	char nienkhoa[50]="";
-	char hocky[50]="";
+	SVDK SVDK;
+	char nienkhoa[10]="";
+	char hocky[5]="";
+	time_t now= time('\0');
+	for(int i=0;i<dsltc.soluong;i++)
+	{
+		if(dsltc.DSltc[i].trangthai==false)
+		{
+			cout<<now-dsltc.Time[i]-60*60*24<<" a";
+			for(NodeSVDK *k=dsltc.DSltc[i].dsSVDK.first;k!=NULL;k=k->next)
+			{
+				if(strcmp(k->svdk.maSV,SV.mSV)==0)
+				{
+					HuyLop(dsltc.DSltc[i]);
+					XoaSvDK(dsltc.DSltc[i].dsSVDK.first,k->svdk.maSV);
+					svdk_thongtinsv();
+				}
+			}
+		}
+	}
+	Tu_Dong_Huy_LTC(dsltc);
 	outtextxy(465,45,SV.malop);
 	outtextxy(975,45,SV.mSV);
 	outtextxy(465,95,SV.ho);
@@ -144,7 +189,7 @@ void xuly_dohoa_svdk(int &luu_id,DSloptinchi &dsltc,NodeSinhVien *&first,SinhVie
 				Nhap(515,195,id,nienkhoa);
 				break;	
 			case 361:
-				Xuat_DS_LTC_DK(405,315,dsltc,nienkhoa,hocky);	
+				Xuat_DS_LTC_DK(405,315,dsltc,root,nienkhoa,hocky,SV.mSV);	
 				id=0;
 				break;
 			case 362:
@@ -155,19 +200,17 @@ void xuly_dohoa_svdk(int &luu_id,DSloptinchi &dsltc,NodeSinhVien *&first,SinhVie
 		}
 		if(id>200&&id<214)
 		{
-			if(kt[id-200]==0)
+			
+			if(KT_Svdk_chua(dsltc.DSltc[tim_ltc(dsltc,id-200,nienkhoa,hocky)].dsSVDK.first,SV.mSV)==false)
 			{
-				outtextxy(1400,315+30*(id-201),"v");	
-				tim_ltc_de_them_svdk(dsltc,SV.mSV,id-200,nienkhoa,hocky);
-				Xuat_DS_LTC_DK(405,315,dsltc,nienkhoa,hocky);
-				kt[id-200]=1;			
+				strcpy(SVDK.maSV,SV.mSV);
+				ThemDauSVDK(dsltc.DSltc[tim_ltc(dsltc,id-200,nienkhoa,hocky)].dsSVDK.first,SVDK);
+				Xuat_DS_LTC_DK(405,315,dsltc,root,nienkhoa,hocky,SV.mSV);			
 			}
-			else if(kt[id-200]==1)
+			else
 			{
-				outtextxy(1400,315+30*(id-201),"  ");
-				tim_ltc_de_Xoa_svdk(dsltc,SV.mSV,id-200,nienkhoa,hocky);
-				Xuat_DS_LTC_DK(405,315,dsltc,nienkhoa,hocky);
-				kt[id-200]=0;
+				XoaSvDK(dsltc.DSltc[tim_ltc(dsltc,id-200,nienkhoa,hocky)].dsSVDK.first,SV.mSV);
+				Xuat_DS_LTC_DK(405,315,dsltc,root,nienkhoa,hocky,SV.mSV);
 			}
 			id=0;
 		}

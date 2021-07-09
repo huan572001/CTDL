@@ -4,11 +4,7 @@
 #include "funtion.h"
 #include "define.h"
 #include "cautrucsinhvien.h"
-void taobarde(int x ,int y ,int x1 ,int y1)//de bang
-{
-	setfillstyle(1,MAU_TRANG);
-	bar(x,y,x1,y1);
-} 
+#include "cautrucloptinchi.h"
 void manhinhchinh3()
 {	
 	setbkcolor(MAU_TRANG);
@@ -25,8 +21,8 @@ void manhinhchinh3()
 }
 void itembentrai1()
 {
-//	rectangle(315,15,1520,260);
-//    rectangle(315,270,1520,780);
+	rectangle(315,15,1520,260);
+    rectangle(315,270,1520,780);
     
     taobutton_t(330,40,"MA LOP",130,30,MAU_XAM,MAU_DEN,20,5);
     taotextinput(460,40,830,70,"",311);
@@ -51,27 +47,33 @@ void itembentrai1()
 	taobutton(1360,100,"NU",130,30,MAU_XAM,MAU_DEN,20,5,318);
 
 	//save//cancle//delete//new//
-	taobutton(630,210,"SAVE",130,30,MAU_XANHDUONG,MAU_TRANG,30,5,4545);
-	taobutton(770,210,"UPDATE",140,30,MAU_XANHDUONG,MAU_TRANG,15,5,3192);
+	taobutton(630,210,"ADD",130,30,MAU_XANHDUONG,MAU_TRANG,30,5,4545);
+	taobutton(770,210,"SAVE",140,30,MAU_XANHDUONG,MAU_TRANG,15,5,3192);
 	taobutton(920,210,"DELETE",140,30,MAU_XANHDUONG,MAU_TRANG,15,5,3193);
-	taobutton(1070,210,"BACK",130,30,MAU_XANHDUONG,MAU_TRANG,30,5,3194);
+	taobutton(1210,210,"BACK",130,30,MAU_XANHDUONG,MAU_TRANG,30,5,3194);
+	taobutton(1070,210,"UPDATE",130,30,MAU_XANHDUONG,MAU_TRANG,30,5,3195);
 }
-void sinhvien_it3(NodeSinhVien *&first,int trangso)
+void sinhvien_it3(NodeSinhVien *first,int trangso,char malop[])
 {   
 	setbkcolor(MAU_TRANG);
 	setcolor(MAU_DEN);
 	taobarde(315,15,1520,260);
 	taobarde(315,270,1520,780);
   	itembentrai1();
-  	
+  	char tam[3];
 	int sldong=15;
 	int slcot=6;
 	int mangdodai[]={0,65,225,225,355,225,90};
 	int chieu_cao=30;
 	char sinhvien[][50]={"","STT","MA LOP","MSSV","HO TEN","SDT","PHAI"};
 	taobang(325,280,chieu_cao,mangdodai,slcot,sldong,sinhvien,10,5,200);
-	XuatDanhSach(405,315,first,mangdodai,trangso);
+	XuatDanhSach(405,315,first,mangdodai,trangso,malop);
 	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,70);
+	chuyen_so_thanh_chuoi(trangso,tam);
+	outtextxy(800,740,tam);
+	outtextxy(820,740,"/");
+	chuyen_so_thanh_chuoi(SL_SV_Lop(first,malop)/14+1,tam);
+	outtextxy(840,740,tam);
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,71);
 }
  void diem_it3()
@@ -91,7 +93,7 @@ void sinhvien_it3(NodeSinhVien *&first,int trangso)
 	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,70);
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,71);
  }
-void lophoc_it3(NodeSinhVien *first,int trangso)
+void lophoc_it3(NodeSinhVien *first,int trangso,int id)
 {
 	setbkcolor(MAU_TRANG);
 	setcolor(MAU_DEN);
@@ -104,10 +106,10 @@ void lophoc_it3(NodeSinhVien *first,int trangso)
     setbkcolor(MAU_TRANG);
 	setcolor(MAU_DEN);
     taotextinput(460,40,830,70,"",3131);
-    
-//	taobutton(770,210,"CANCLE",140,30,MAU_XANHDUONG,MAU_TRANG,15,5,313);
-	taobutton(850,210,"CHI TIET",140,30,MAU_XANHDUONG,MAU_TRANG,15,5,501);
-    
+    if(id==31)
+	taobutton(850,210,"VIEW",140,30,MAU_XANHDUONG,MAU_TRANG,30,5,501);
+	else
+    taobutton(850,210,"PRINT",140,30,MAU_XANHDUONG,MAU_TRANG,30,5,501);
     
 	int sldong=15;
 	int slcot=4;
@@ -120,21 +122,49 @@ void lophoc_it3(NodeSinhVien *first,int trangso)
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,71);
 	
 }
-void XuLyNhapSV(NodeSinhVien *&first,int &luu_id,char maLop[])
+void Frint_SV_Lop(NodeSinhVien *&first,int &luu_id,char maLop[])
+{
+	int trangso=1;
+		int x=-1, y=-1;
+	int id=0;
+	sinhvien_it3(first,trangso,maLop);
+	while(true)
+	{
+		outtextxy(465,45,maLop);
+		if(ismouseclick(WM_LBUTTONDOWN)){
+			getmouseclick(WM_LBUTTONDOWN, x, y);
+			id = MapID[x][y];
+			clearmouseclick(WM_LBUTTONDOWN);
+		}
+		if (id<=4 && id>=1||id<=33&&id>=31||id==501)
+		{
+			luu_id=id;
+			break;
+		}
+		if(id==70)
+		{
+			if(trangso>1)
+			{
+				trangso--;
+				sinhvien_it3(first,trangso,maLop);
+			}	
+			id=0;
+		}
+		else if(id==71)
+		{
+			trangso++;
+			sinhvien_it3(first,trangso,maLop);
+			id=0;
+		}			
+		delay(0.001);
+	}
+}
+void XuLyNhapSV(NodeSinhVien *&first,DSloptinchi dsltc,int &luu_id,char maLop[])
 {
 	SinhVien SV;
-	NodeSinhVien *k;
 	int trangso=1;
-	for(k=first;k!=NULL;k=k->next)
-	{
-		if(strcmp(k->sv.malop,maLop)==0)
-		{
-			break;	
-		}
-	}
-	sinhvien_it3(k,trangso);
-	char mSVtam[15];
-
+	sinhvien_it3(first,trangso,maLop);
+	char mSVtam[MaSV];
 	int x=-1, y=-1;
 	int id=0;
 	while(true){	
@@ -154,6 +184,7 @@ void XuLyNhapSV(NodeSinhVien *&first,int &luu_id,char maLop[])
 		switch(id)
 		{
 			case 312:
+				if(luu_id<200||luu_id>214)
 				NhapInHoa(975,45,id,SV.mSV);
 				break;
 			case 313:
@@ -167,31 +198,61 @@ void XuLyNhapSV(NodeSinhVien *&first,int &luu_id,char maLop[])
 				break;
 			case 317:
 				SV.phai=true;
+				taobutton(1360,60,"NAM",130,30,MAU_XAM1,MAU_DEN,20,5,317);
+				taobutton(1360,100,"NU",130,30,MAU_XAM,MAU_DEN,20,5,318);
 				break;
 			case 318:
 				SV.phai=false;
+				taobutton(1360,60,"NAM",130,30,MAU_XAM,MAU_DEN,20,5,317);
+				taobutton(1360,100,"NU",130,30,MAU_XAM1,MAU_DEN,20,5,318);
 				break;
 			case 3192:
 				chinh_sua_Sv_coMS(first,SV,mSVtam);
 				remove("Sinhvien.dat");
 				vietSVvaofile(first);
-				sinhvien_it3(k,trangso);
-				id=501;
+				sinhvien_it3(first,trangso,maLop);
+				strcpy(SV.mSV,"");
+				strcpy(SV.sdt,"");
+				strcpy(SV.ho,"");
+				strcpy(SV.ten,"");
+				id=0;
 				break;
 			case 3193:
-				XoaSv(first,mSVtam);
-				remove("Sinhvien.dat");
-				vietSVvaofile(first);
-				sinhvien_it3(k,trangso);
-				id=501;
-				break;
-			case 4545:
-				if(Kiem_tra_nhapSV(SV)==true&&Kiem_tra_MaSV(first,SV.mSV)==true)
+				if(KT_SV_DK_LTC(dsltc,mSVtam)==false)
 				{
-					NodeSinhVien *p=TaoMotSV(SV);
-					ThemSVvaolop(first,SV);
+					XoaSv(first,mSVtam);
+					remove("Sinhvien.dat");
+					vietSVvaofile(first);
+					sinhvien_it3(first,trangso,maLop);
+					strcpy(SV.mSV,"");
+					strcpy(SV.sdt,"");
+					strcpy(SV.ho,"");
+					strcpy(SV.ten,"");
+					id=0;				
+				}
+				else
+				{
+					outtextxy(770,180,"Khong Duoc Xoa!");
+					id=0;
+				}
+				break;
+			case 3194://back
+				id=3;
+				break;
+			case 3195://update
+				sinhvien_it3(first,trangso,maLop);
+				id=0;
+				break;
+			case 4545://ADD
+				if(Kiem_tra_nhapSV(SV)==true&&Kiem_tra_MaSV(first,SV.mSV)==true)
+				{					
+					ThemSVvaolop(first,SV);					
 					WriteFileSV("Sinhvien.Dat",SV);
-					sinhvien_it3(k,trangso);
+					sinhvien_it3(first,trangso,maLop);
+					strcpy(SV.mSV,"");
+					strcpy(SV.sdt,"");
+					strcpy(SV.ho,"");
+					strcpy(SV.ten,"");
 					id=0;
 				}
 				else
@@ -204,39 +265,54 @@ void XuLyNhapSV(NodeSinhVien *&first,int &luu_id,char maLop[])
 				if(trangso>1)
 				{
 					trangso--;
-					sinhvien_it3(k,trangso);//in lai trang
+					sinhvien_it3(first,trangso,maLop);//in lai trang
 				}	
 				id=0;
 				break;
 			case 71:
-				trangso++;
-				sinhvien_it3(k,trangso);//in lai trang
+				if(SL_SV_Lop(first,maLop)/14+1>trangso)
+				{
+					trangso++;
+					sinhvien_it3(first,trangso,maLop);//in lai trang
+				}
 				id=0;
 				break;
 		}
 		if(id>200&&id<=214)
 		{	
-			sinhvien_it3(k,trangso);
-			timSV(k,id-200+(trangso-1)*14,SV);
-			strcpy(mSVtam,SV.mSV);
-			outtextxy(975,45,SV.mSV);
-			outtextxy(465,95,SV.ho);
-			outtextxy(975,95,SV.ten);
-			outtextxy(465,145,SV.sdt);
-			luu_id=id;//cap nhat luu id de bat ko cho nhap ma mon hoc
+			sinhvien_it3(first,trangso,maLop);
+			if(SL_SV_Lop(first,maLop)>=id-200+(trangso-1)*14)
+			{
+				timSV(first,id-200+(trangso-1)*14,SV,maLop);
+				strcpy(mSVtam,SV.mSV);
+				outtextxy(975,45,SV.mSV);
+				outtextxy(465,95,SV.ho);
+				outtextxy(975,95,SV.ten);
+				outtextxy(465,145,SV.sdt);
+				luu_id=id;//cap nhat luu id de bat ko cho nhap ma mon hoc
+			}	
+			else
+			{
+				strcpy(SV.mSV,"");
+				strcpy(SV.sdt,"");
+				strcpy(SV.ho,"");
+				strcpy(SV.ten,"");
+			}	
+				
+				
 			id=0;//cho con tro nhay vao o nhap ten mon hoc
 		}
 		delay(0.001);		
 	}
 }
-void XuLyNhapLOP(NodeSinhVien *&first,int &luu_id)
+void XuLyNhapLOP(NodeSinhVien *&first,DSloptinchi dsltc,int &luu_id)
 {
 	
-	char maLop[15]="";
+	char maLop[Malop]="";
 	int x=-1, y=-1;
 	int id=0;
 	int trangso=1;
-	lophoc_it3(first,trangso);
+	lophoc_it3(first,trangso,luu_id);
 	while(true){	
 		//Bat chuot	
 		if(ismouseclick(WM_LBUTTONDOWN)){
@@ -255,43 +331,62 @@ void XuLyNhapLOP(NodeSinhVien *&first,int &luu_id)
 				NhapInHoa(465,45,id,maLop);
 				break;
 			case 501:
-				if(strlen(maLop)>0)
-				XuLyNhapSV(first,id,maLop);
+				if(luu_id==31)
+				{
+					if(strlen(maLop)>0)
+					XuLyNhapSV(first,dsltc,id,maLop);
+					else
+					outtextxy(500,100,"KHONG DUOC DE TRONG!");
+				}
 				else
-				outtextxy(500,100,"KHONG DUOC DE TRONG!");
+				{
+					for(NodeSinhVien *k=first;k!=NULL;k=k->next)
+					{
+						if(strcmp(k->sv.malop,maLop)==0)
+						{
+							Frint_SV_Lop(first,id,maLop);	
+							break;
+						}
+						if(k->next==NULL)
+						{
+							outtextxy(500,100,"KHONG TON TAI LOP!");
+							id=3131;	
+						}
+					}
+					
+				}
+				
 				break;
 			case 70:
 				if(trangso>1)
 				{
 					trangso--;
-					lophoc_it3(first,trangso);
+					lophoc_it3(first,trangso,luu_id);
 				}	
 				id=0;
 				break;
 			case 71:
 				trangso++;
-				lophoc_it3(first,trangso);
+				lophoc_it3(first,trangso,luu_id);
 				id=0;
 				break;
 		}
 		if(id>100&&id<114)
 		{
-			lophoc_it3(first,trangso);//tao lai o nhap
+			lophoc_it3(first,trangso,luu_id);//tao lai o nhap
 			timLopSV(first,id-100,maLop);
 			outtextxy(465,45,maLop);
-			luu_id=id;//cap nhat luu id de bat ko cho nhap ma mon hoc
 			id=0;//cho con tro nhay vao o nhap ten mon hoc
 		}
 		delay(0.001);		
 	}
 }
-void xulydssv(NodeSinhVien *&first,int &luu_id)
+void xulydssv(NodeSinhVien *&first,DSloptinchi dsltc,int &luu_id)
 {
 	char maLop[15];
 	manhinhchinh3();
 	int x=-1, y=-1;
-	int id=0;
-	XuLyNhapLOP(first,id);
+	int id=31;
 	while(true){
 		
 		//Bat chuot
@@ -308,30 +403,19 @@ void xulydssv(NodeSinhVien *&first,int &luu_id)
 		switch(id)
 		{
 			case 31://sinh vien
-			//	manhinhchinh3();
-//				sinhvien_it3();
-				XuLyNhapLOP(first,id);
+				manhinhchinh3();
+				taobutton(16,370,"Sinh Vien",280,70,MAU_XAM1,MAU_DEN,20,30,31);
+				XuLyNhapLOP(first,dsltc,id);
 				break;
-			case 32://lop hoc
-			//	manhinhchinh3();
-				diem_it3();
-				id=0;
+			case 33://in lop
+				manhinhchinh3();
+  				taobutton(16,445,"In DSSV",280,70,MAU_XAM1,MAU_DEN,20,30,33);
+  				XuLyNhapLOP(first,dsltc,id);
 				break;
-			case 33:
-			//	manhinhchinh3();
-//				lophoc_it3(first);
-				id=0;
-				break;
-			case 3131:
-				Nhap(465,45,id,maLop);
-				id=0;
-				break;
-//			default : 
-//			manhinhchinh3();
-//			break;
+//			case 3131:
+//				Nhap(465,45,id,maLop);
+//				break;
 		}
 		delay(0.001);	
 }
 }
-
-

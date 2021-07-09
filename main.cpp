@@ -14,13 +14,14 @@ graphics in Dev-C++ - nguyenvanquan7826
 #include "dh_svdk.h"
 const char AD[10]="ADMIN";
 const char Pass[10]="GV";
-const char passsv[10]="SV";
+//const char passsv[10];
+
 bool ktdn(NodeSinhVien *first,SinhVien &SV)//kiem tra dang nhap sinh vien 
 {
 	
 	for (NodeSinhVien *k=first ; k!=NULL ; k=k->next)
 	{
-		if ((stricmp(SV.mSV,k->sv.mSV)==0) && ((stricmp(SV.sdt,passsv)==0)))
+		if ((stricmp(SV.mSV,k->sv.mSV)==0) && ((stricmp(SV.sdt,k->sv.sdt)==0)))
 		{
 			SV=k->sv;
 			return true;
@@ -31,7 +32,49 @@ bool ktdn(NodeSinhVien *first,SinhVien &SV)//kiem tra dang nhap sinh vien
 }
 void xuly_svdk(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first,SinhVien SV);// sinh vien dang ky
 void xuly(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first);// admin
-
+void ttsv()
+{
+//    setbkcolor(MAU_TRANG);
+	setfillstyle(1,MAU_XAM);
+	bar(311,11,1524,789);
+	
+	setbkcolor(MAU_XAM);
+	setcolor(MAU_DEN);
+	settextstyle(4,0,2);
+	outtextxy(550,50,"HOC VIEN CONG NGHE BUU CHINH VIEN THONG ");
+	outtextxy(735,80,"CO SO TP.HO CHI MINH");
+	
+	setbkcolor(MAU_XAM);
+	setcolor(MAU_DEN);
+	settextstyle(0,0,4);
+	outtextxy(850,200,"DE TAI");
+	outtextxy(560,250,"QUAN LY SINH VIEN THEO");
+	outtextxy(780,300,"HE TIN CHI");
+	
+	setbkcolor(MAU_XAM);
+	setcolor(MAU_DEN);
+	settextstyle(4,0,3);
+	
+	outtextxy(560,430,"Mon hoc");
+	outtextxy(785,430,":");
+	outtextxy(810,430,"Cau truc du lien & giai thuat");
+	
+	outtextxy(560,480,"Giang vien");
+	outtextxy(785,480,":");
+	outtextxy(810,480,"Thay Luu Nguyen Ky Thu");
+	
+	outtextxy(560,530,"Lop");
+	outtextxy(785,530,":");
+	outtextxy(810,530,"D19CQCN03-N");
+	
+	outtextxy(560,580,"Sinh vien");
+	outtextxy(785,580,":");
+	outtextxy(810,580,"1.Lai Van Huan");
+	outtextxy(1090,580,"- N19DCCN068");
+	outtextxy(810,630,"2.Le Huu Hoang");
+	outtextxy(1090,630,"- N19DCCN064");
+	
+}
 void taobangmenu()
 {
 	setmapid();
@@ -75,13 +118,12 @@ void dangnhap(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first)
 	
 	taobutton_t(530,380,"Mat khau",190,30,MAU_XAM,MAU_DEN,30,5);	
 	tao_o(720,380,1000,410);
-	taobutton_k(550,460,"DANG NHAP",180,40,MAU_XANHDUONG,MAU_TRANG,1000);
-	taobutton_k(850,460,"THOAT",120,40,MAU_DO,MAU_TRANG,1001);
+	taobutton_k(550,460,"DANG NHAP",180,40,MAU_XANHDUONG,MAU_TRANG,id_Dang_Nhap);
+	taobutton_k(850,460,"THOAT",120,40,MAU_DO,MAU_TRANG,id_Thoat);
 	
-	taotextinput(720,310,1000,340,"",1002);
-	taotextinput(720,380,1000,410,"",1003);
+	taotextinput(720,310,1000,340,"",id_Nhap_TK);
+	taotextinput(720,380,1000,410,"",id_Nhap_MK);
 	SinhVien SV;
-	int luu_id=0;
 	int x=-1, y=-1;
 	int id=0;
 	while(true){
@@ -92,14 +134,16 @@ void dangnhap(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first)
 			}
 		switch(id){
 			
-			case 1000: 
+			case id_Dang_Nhap: 
 				if ((stricmp(SV.mSV,AD)==0) && ((stricmp(SV.sdt,Pass)==0)))//dang nhap giang vien
 				{
 				taobangmenu();
+					KT_Huy_Lop(dsltc);
 				xuly(root,dsltc,first);
 				}
-				else if (ktdn(first,SV)==true) 
+				else if (ktdn(first,SV)==true)
 				{
+						KT_Huy_Lop(dsltc);
 					xuly_svdk(root,dsltc,first,SV);
 				}
 				else//nhap lai
@@ -107,13 +151,16 @@ void dangnhap(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first)
 				outtextxy(700,420,"Thong tin sai! Moi nhap lai");
 				}				
 				break;
-			case 1001:
+			case id_Thoat://thoat khoi truong trinh
+				XoaALLTree(root);
+				XoaALLltc(dsltc);
+				XoaALL_SV(first);
 				exit(0);
 				break;
-			case 1002:
+			case id_Nhap_TK:
 				NhapInHoa(725,315,id,SV.mSV);
 				break;
-			case 1003:
+			case id_Nhap_MK:
 				NhapInHoa(725,385,id,SV.sdt);
 				break;			
 		}	
@@ -124,11 +171,10 @@ void dangnhap(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first)
 
 void xuly(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first)
 {
-	int luu_id=0;
+	ttsv();
 	int x=-1, y=-1;
 	int id=0;
 	while(true){					
-		id=luu_id;
 		if(ismouseclick(WM_LBUTTONDOWN)){
 			getmouseclick(WM_LBUTTONDOWN, x, y);
 			id = MapID[x][y];
@@ -136,40 +182,36 @@ void xuly(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first)
 		}
 		
 		switch(id){
-			case 1:
-				luu_id=0;
+			case id_MonHoc:
 				setmapid();
 				setbkcolor(MAU_TRANG);
   			 	cleardevice();
 				taobangmenu();
-				xulymonhoc(luu_id,root);
+				taobutton(16,16,"MON HOC",280,70,MAU_XAM1,MAU_DEN,20,30,1);
+				xulymonhoc(id,root,dsltc);
 				break;
-			case 2:
-				luu_id=0;
+			case id_LTC:
 				setmapid();
 				setbkcolor(MAU_TRANG);
   			 	cleardevice();
 				taobangmenu();
-				xulyltc(luu_id,dsltc,first);
-//				XuLythemLTC(dsltc,luu_id);
+				taobutton(16,91,"LOP TIN CHI",280,70,MAU_XAM1,MAU_DEN,20,30,2);
+				xulyltc(id,dsltc,first,root);
 				break;
-			case 3:
-				luu_id=0;
+			case id_SV:
 				setmapid();
 				setbkcolor(MAU_TRANG);
    				cleardevice();
   			 	taobangmenu();
-				xulydssv(first,luu_id);
+  			 	taobutton(16,166,"SINH VIEN",280,70,MAU_XAM1,MAU_DEN,20,30,3);
+				xulydssv(first,dsltc,id);
 				break;
-			case 4:
-				luu_id=0;
+			case id_DangXuat:
 				setmapid();
 				setbkcolor(MAU_TRANG);
    				cleardevice();
 				dangnhap(root,dsltc,first);
-				
 				break;
-
 		}
 		delay(0.001);
 }
@@ -191,7 +233,7 @@ void xuly_svdk(Node *root,DSloptinchi &dsltc,NodeSinhVien *&first,SinhVien SV)
 		switch(id){
 			case 2:
 				taobangmenu();
-				xuly_dohoa_svdk(id,dsltc,first,SV);
+				xuly_dohoa_svdk(id,dsltc,first,SV,root);
 			case 4:
 				setmapid();
 				setbkcolor(MAU_TRANG);
@@ -222,12 +264,8 @@ int main(int argc, char *argv[])
    	
 	//tao o dang nhap
 	
-	dangnhap(root,dsltc,first);
-	
-			
+	dangnhap(root,dsltc,first);	
 	while(!kbhit()) delay(1);		// pause screen	
 	return 0;
 }
-
-
 
