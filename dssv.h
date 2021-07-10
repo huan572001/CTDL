@@ -66,7 +66,7 @@ void sinhvien_it3(NodeSinhVien *first,int trangso,char malop[])
 	int mangdodai[]={0,65,225,225,355,225,90};
 	int chieu_cao=30;
 	char sinhvien[][50]={"","STT","MA LOP","MSSV","HO TEN","SDT","PHAI"};
-	taobang(325,280,chieu_cao,mangdodai,slcot,sldong,sinhvien,10,5,200);
+	taobang(325,280,chieu_cao,mangdodai,slcot,sldong,sinhvien,10,5,200,trangso);
 	XuatDanhSach(405,315,first,mangdodai,trangso,malop);
 	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,70);
 	chuyen_so_thanh_chuoi(trangso,tam);
@@ -76,23 +76,23 @@ void sinhvien_it3(NodeSinhVien *first,int trangso,char malop[])
 	outtextxy(840,740,tam);
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,71);
 }
- void diem_it3()
- {
- 	setbkcolor(MAU_TRANG);
- 	setcolor(MAU_DEN);
-	taobarde(315,15,1520,260);
-	taobarde(315,270,1520,780);
- 	itembentrai1();
-	int sldong=15;
-	int slcot=5;
-	int mangdodai_diem[]={0,80,350,245,245,225};
-	int chieu_cao=30;
-	char diem[][50]={"","STT","MSSV","HO","TEN","DIEM TB"};
-	taobang(325,280,chieu_cao,mangdodai_diem,slcot,sldong,diem,10,5,100);
-			
-	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,70);
-	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,71);
- }
+// void diem_it3()
+// {
+// 	setbkcolor(MAU_TRANG);
+// 	setcolor(MAU_DEN);
+//	taobarde(315,15,1520,260);
+//	taobarde(315,270,1520,780);
+// 	itembentrai1();
+//	int sldong=15;
+//	int slcot=5;
+//	int mangdodai_diem[]={0,80,350,245,245,225};
+//	int chieu_cao=30;
+//	char diem[][50]={"","STT","MSSV","HO","TEN","DIEM TB"};
+//	taobang(325,280,chieu_cao,mangdodai_diem,slcot,sldong,diem,10,5,100,trangso);/////
+//			
+//	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,70);
+//	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,71);
+// }
 void lophoc_it3(NodeSinhVien *first,int trangso,int id)
 {
 	setbkcolor(MAU_TRANG);
@@ -112,13 +112,21 @@ void lophoc_it3(NodeSinhVien *first,int trangso,int id)
     taobutton(850,210,"PRINT",140,30,MAU_XANHDUONG,MAU_TRANG,30,5,501);
     
 	int sldong=15;
-	int slcot=4;
-	int mangdodai_lh[]={0,136,350,327,327};
+	int slcot=3;
+	int mangdodai_lh[]={0,136,500,500};
 	int chieu_cao=30;
-	char lophoc[][50]={"","STT","MA LOP","SO LUONG SINH VIEN","NAM NHAP HOC"};
-	taobang(325,280,chieu_cao,mangdodai_lh,slcot,sldong,lophoc,10,5,100);
+	char lophoc[][50]={"","STT","MA LOP","SO LUONG SINH VIEN"};
+	taobang(325,280,chieu_cao,mangdodai_lh,slcot,sldong,lophoc,10,5,100,trangso);
 	XuatDSlop(460,310,first,mangdodai_lh,trangso);	
 	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,70);
+	char tam[3];
+    chuyen_so_thanh_chuoi(trangso,tam);
+	setbkcolor(MAU_TRANG);
+	setcolor(MAU_DEN);
+	taobutton_t(850,740,tam,20,20,MAU_TRANG,MAU_DEN,0,0);
+	outtextxy(870,740,"/");
+	chuyen_so_thanh_chuoi((Dem_Lop(first,trangso)/14)+1,tam);
+	taobutton_t(890,740,tam,20,20,MAU_TRANG,MAU_DEN,0,0);
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,71);
 	
 }
@@ -366,8 +374,11 @@ void XuLyNhapLOP(NodeSinhVien *&first,DSloptinchi dsltc,int &luu_id)
 				id=0;
 				break;
 			case 71:
+				if (Dem_Lop(first,trangso)/14>trangso-1)
+				{
 				trangso++;
 				lophoc_it3(first,trangso,luu_id);
+				}
 				id=0;
 				break;
 		}

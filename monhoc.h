@@ -40,7 +40,7 @@ void tao_item1(Node *root,int trangso)
 	
 	int chieu_cao=30;
 	char monhoc[][50]={"","STT","MA MON HOC","TEN MON HOC","STCLT","STCTH"};
-	taobang(325,280,chieu_cao,mangdodai_mh,slcot,sldong,monhoc,10,5,100);
+	taobang(325,280,chieu_cao,mangdodai_mh,slcot,sldong,monhoc,10,5,100,trangso);
 	char tam[3];
 	chuyen_so_thanh_chuoi(trangso,tam);
 	setbkcolor(MAU_TRANG);

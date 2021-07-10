@@ -68,33 +68,41 @@ void Xoa_ALL_SVDK(NodeSVDK *&first)
 		delete p;
 	}
 }
-void XuatDanhSachSVDK(int x,int y,NodeSVDK *first,NodeSinhVien *firstSV)
+void XuatDanhSachSVDK(int x,int y,NodeSVDK *first,NodeSinhVien *firstSV,int trangso)
 {
+		setbkcolor(MAU_TRANG);
+	setcolor(MAU_DEN);
 	int mangdodai_diem[]={0,80,350,245,245,225};
 	int tam=x;
+	int demSLSV=1;
 	char tam1[4];
 	for (NodeSVDK *k = first; k != NULL; k = k->next)
 	{
-		outtextxy(x,y,k->svdk.maSV);
-		for(NodeSinhVien *h=firstSV;h!=NULL;h=h->next)
+		if(demSLSV>(trangso-1)*14&&demSLSV<=trangso*14)
 		{
-			if(strcmp(h->sv.mSV,k->svdk.maSV)==0)
+			outtextxy(x,y,k->svdk.maSV);
+			for(NodeSinhVien *h=firstSV;h!=NULL;h=h->next)
 			{
-				outtextxy(x=x+mangdodai_diem[2],y,h->sv.ho);
-				outtextxy(x=x+mangdodai_diem[3],y,h->sv.ten);
+				if(strcmp(h->sv.mSV,k->svdk.maSV)==0)
+				{
+					outtextxy(x=x+mangdodai_diem[2],y,h->sv.ho);
+					outtextxy(x=x+mangdodai_diem[3],y,h->sv.ten);
+				}
 			}
+			if(k->svdk.diem==0)
+			{
+				outtextxy(x=x+mangdodai_diem[4]+100,y,"0");
+			}
+			else
+			{
+				chuyen_so_thanh_chuoi(k->svdk.diem,tam1);
+				outtextxy(x=x+mangdodai_diem[4]+100,y,tam1);			
+			}
+			x=tam;
+			y=y+30;
 		}
-		if(k->svdk.diem==0)
-		{
-			outtextxy(x=x+mangdodai_diem[4]+100,y,"0");
-		}
-		else
-		{
-			chuyen_so_thanh_chuoi(k->svdk.diem,tam1);
-			outtextxy(x=x+mangdodai_diem[4]+100,y,tam1);			
-		}
-		x=tam;
-		y=y+30;
+		demSLSV++;
+		
 	}
 }
 int soluongSVDK(NodeSVDK *first)

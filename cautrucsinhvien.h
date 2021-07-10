@@ -293,6 +293,36 @@ bool Kiem_tra_MaSV(NodeSinhVien *first,char masv[])
 	}
 	return true;
 }
+int Dem_Lop(NodeSinhVien *first,int trangso)
+{
+    int soluong=0;
+	int i=1;
+	char sl[4];
+	NodeSinhVien *tam=first;//giu ma lop dau ds
+	if(i>14*(trangso-1)&&i<=14*trangso)
+	for(NodeSinhVien *k=first;k!=NULL;k=k->next)//duyet ds de dam sl sinh vien va in ra cac lop
+	{
+		//dem so luong SV cua lop
+		if(strcmp(k->sv.malop,tam->sv.malop)!=0)//gap mot lop khac lop da in
+		{
+			if(i>14*(trangso-1)&&i<=14*trangso)
+			{
+				soluong=0;//cap nhat lai so luong SV =0 de bat dau dem SV lop tiep theo
+				tam=k;//giu lai ma lop vua in
+			}
+			i++;			
+		}
+		if(k->next==NULL)//cuoi ds in so luong sinh vien cua lop cuoi cung
+		{
+			if(i>14*(trangso-1)&&i<=14*trangso)
+			{
+				soluong++;
+			}			
+		}
+		soluong++;
+	}
+	return soluong;
+}
 void WriteFileSV(char *FileName,SinhVien SV)  
 {  
 	FILE *f;      	

@@ -84,26 +84,9 @@ void svdk_thongtinsv()
 	int mangdodai_svdk[]={0,80,173,273,173,173,173,100};
 	int chieu_cao=30;
 	char svdk[][50]={"","STT","MMH","TEN MH","NHOM","SVDDK","CL","CHON"};
-	taobang(325,280,chieu_cao,mangdodai_svdk,slcot,sldong,svdk,10,5,200);		
+	taobang(325,280,chieu_cao,mangdodai_svdk,slcot,sldong,svdk,10,5,200,1);		
 	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,00);
 	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,00);
-}
-void bangchon_svdk()
-{
-	setbkcolor(MAU_TRANG);
-	setcolor(MAU_DEN);
-	rectangle(315,270,1520,780);
-	
-	
-	int sldong=15;
-	int slcot=7;
-	int mangdodai_svdk[]={0,80,173,273,173,173,173,100};
-	int chieu_cao=30;
-	char svdk[][50]={"","STT","MMH","TEN MH","NHOM","SVDDK","CL","CHON"};
-	taobang(325,280,chieu_cao,mangdodai_svdk,slcot,sldong,svdk,10,5,200);		
-	taobutton(330,740,"PREV",130,30,MAU_XAM,MAU_DEN,30,5,00);
-	taobutton(1370,740,"NEXT",130,30,MAU_XAM,MAU_DEN,30,5,00);
-	
 }
 void HuyLop(LopTinChi ltc)
 {
@@ -140,6 +123,7 @@ void xuly_dohoa_svdk(int &luu_id,DSloptinchi &dsltc,NodeSinhVien *&first,SinhVie
 	svdk_thongtinsv();
 	int x=-1, y=-1;
 	int id=0;
+	int trangso=1;
 	SVDK SVDK;
 	char nienkhoa[10]="";
 	char hocky[5]="";
@@ -148,7 +132,6 @@ void xuly_dohoa_svdk(int &luu_id,DSloptinchi &dsltc,NodeSinhVien *&first,SinhVie
 	{
 		if(dsltc.DSltc[i].trangthai==false)
 		{
-			cout<<now-dsltc.Time[i]-60*60*24<<" a";
 			for(NodeSVDK *k=dsltc.DSltc[i].dsSVDK.first;k!=NULL;k=k->next)
 			{
 				if(strcmp(k->svdk.maSV,SV.mSV)==0)
@@ -189,28 +172,29 @@ void xuly_dohoa_svdk(int &luu_id,DSloptinchi &dsltc,NodeSinhVien *&first,SinhVie
 				Nhap(515,195,id,nienkhoa);
 				break;	
 			case 361:
-				Xuat_DS_LTC_DK(405,315,dsltc,root,nienkhoa,hocky,SV.mSV);	
+				Xuat_DS_LTC_DK(405,315,dsltc,root,nienkhoa,hocky,SV.mSV,trangso);	
 				id=0;
 				break;
 			case 362:
 				remove("Loptinchi.dat");
 				vietLTCvaofile(dsltc);
+				outtextxy(750,230,"Dang Ky Thanh Cong.");
 				id=0;
 				break;
 		}
 		if(id>200&&id<214)
 		{
-			
+			outtextxy(750,230,"                                      ");
 			if(KT_Svdk_chua(dsltc.DSltc[tim_ltc(dsltc,id-200,nienkhoa,hocky)].dsSVDK.first,SV.mSV)==false)
 			{
 				strcpy(SVDK.maSV,SV.mSV);
 				ThemDauSVDK(dsltc.DSltc[tim_ltc(dsltc,id-200,nienkhoa,hocky)].dsSVDK.first,SVDK);
-				Xuat_DS_LTC_DK(405,315,dsltc,root,nienkhoa,hocky,SV.mSV);			
+				Xuat_DS_LTC_DK(405,315,dsltc,root,nienkhoa,hocky,SV.mSV,trangso);			
 			}
 			else
 			{
 				XoaSvDK(dsltc.DSltc[tim_ltc(dsltc,id-200,nienkhoa,hocky)].dsSVDK.first,SV.mSV);
-				Xuat_DS_LTC_DK(405,315,dsltc,root,nienkhoa,hocky,SV.mSV);
+				Xuat_DS_LTC_DK(405,315,dsltc,root,nienkhoa,hocky,SV.mSV,trangso);
 			}
 			id=0;
 		}

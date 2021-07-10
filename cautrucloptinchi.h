@@ -134,15 +134,20 @@ void Xuat_mot_ltc_dk(int x,int y,LopTinChi ltc,Node *root,int mangdodai[],char m
 		else
 		outtextxy(x=x+mangdodai[6]+20,y,"  ");
 }
-void Xuat_DS_LTC_DK(int x,int y,DSloptinchi dsltc,Node *root,char nienkhoa[], char hocky[],char maSV[])
+void Xuat_DS_LTC_DK(int x,int y,DSloptinchi dsltc,Node *root,char nienkhoa[], char hocky[],char maSV[],int trangso)
 {
 	int mangdodai_svdk[]={0,80,173,273,173,173,173,100};
+	int a=1;
 	for(int i=0;i<dsltc.soluong;i++)
 	{
 		if(strcmp(nienkhoa,dsltc.DSltc[i].nienKhoa)==0&&chuyen_chuoi_thanh_so(hocky)==dsltc.DSltc[i].hocKy&&dsltc.DSltc[i].trangthai==true)
 		{
-			Xuat_mot_ltc_dk(x,y,dsltc.DSltc[i],root,mangdodai_svdk,maSV);
-			y=y+30;
+			if(a>(trangso-1)*14&&a<=trangso*14)
+			{
+				Xuat_mot_ltc_dk(x,y,dsltc.DSltc[i],root,mangdodai_svdk,maSV);
+				y=y+30;
+			}
+			x++;
 		}
 	}
 }

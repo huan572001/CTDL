@@ -14,7 +14,6 @@ graphics in Dev-C++ - nguyenvanquan7826
 #include "dh_svdk.h"
 const char AD[10]="ADMIN";
 const char Pass[10]="GV";
-//const char passsv[10];
 
 bool ktdn(NodeSinhVien *first,SinhVien &SV)//kiem tra dang nhap sinh vien 
 {
